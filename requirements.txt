@@ -1,7 +1,9 @@
 streamlit
 streamlit-option-menu
 langdetect
-
+speech_recognition
+pydub
 mysql-connector-python
 gtts
 google-generativeai
+tempfile
