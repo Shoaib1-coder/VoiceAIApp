@@ -4,7 +4,7 @@ import mysql.connector
 from gtts import gTTS
 from langdetect import detect
 import google.generativeai as genai
-import speech_recognition as sr
+
 from pydub import AudioSegment
 import whisper
 import os
