@@ -212,8 +212,8 @@ def show_home():
 
            st.audio(altered_audio.export(format="wav"), format="audio/wav")
 
-          st.download_button("Download Altered Audio", altered_audio.export(format="wav"))
-)
+           st.download_button("Download Altered Audio", altered_audio.export(format="wav"))
+
 
     elif selected_page == "Sound Effects":
         st.subheader("Sound Effects Page")
