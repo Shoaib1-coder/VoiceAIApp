@@ -1,6 +1,6 @@
 streamlit
 streamlit-option-menu
-elevenlabs==0.2.27
+langdetect
 
 mysql-connector-python
 gtts
