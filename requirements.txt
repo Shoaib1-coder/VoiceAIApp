@@ -7,4 +7,6 @@ google-generativeai
 pydub
 whisper
 torch
+pyaudio
+wave
 
