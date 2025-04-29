@@ -19,14 +19,14 @@ import time
     )
     return conn
 
-def create_user(username, password):
+#def create_user(username, password):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (username, password))
     conn.commit()
     conn.close()
 
-def login_user(username, password):
+#def login_user(username, password):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM users WHERE username=%s AND password=%s", (username, password))
