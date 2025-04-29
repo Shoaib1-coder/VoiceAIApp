@@ -6,6 +6,7 @@ from langdetect import detect
 import google.generativeai as genai
 import speech_recognition as sr
 from pydub import AudioSegment
+import whisper
 import os
 import tempfile
 import time
@@ -140,51 +141,37 @@ def show_home():
 
     elif selected_page == "Speech to Text":
         st.subheader("Speech to Text Page")
-        st.title("🎧 Speech-to-Text Transcriber with Language Detection")
+        st.title("🗣️ Speech to Text with Language Detection")
 
         uploaded_file = st.file_uploader("Upload an audio file (.mp3 or .wav only)", type=["mp3", "wav"])
 
         if uploaded_file:
-               st.audio(uploaded_file)
+          st.audio(uploaded_file)
 
-    # Save the uploaded file to a temporary location
-               with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3" if uploaded_file.name.endswith(".mp3") else ".wav") as temp_audio:
-                temp_audio.write(uploaded_file.read())
-                temp_audio_path = temp_audio.name
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_wav_file:
+          if uploaded_file.name.endswith(".mp3"):
+            audio = AudioSegment.from_mp3(uploaded_file)
+            audio.export(temp_wav_file.name, format="wav")
+          else:
+            temp_wav_file.write(uploaded_file.read())
 
-    # Convert mp3 to wav if necessary
-               if uploaded_file.name.endswith(".mp3"):
-                   audio = AudioSegment.from_mp3(temp_audio_path)
-                   wav_path = temp_audio_path.replace(".mp3", ".wav")
-                   audio.export(wav_path, format="wav")
-               else:
-                wav_path = temp_audio_path
+        temp_path = temp_wav_file.name
 
-               recognizer = sr.Recognizer()
-               with sr.AudioFile(wav_path) as source:
-                st.info("Transcribing audio...")
-                audio_data = recognizer.record(source)
-                try:
-                  text = recognizer.recognize_google(audio_data)
-                  lang = detect(text)
-                  st.success("Transcription successful!")
-                  st.markdown(f"**Detected Language:** `{lang}`")
-                  st.text_area("Transcribed Text:", value=text, height=200)
+        st.info("🔄 Transcribing using Whisper model...")
 
-            # Download button for text
-                  st.download_button("Download Transcript", text, file_name="transcription.txt", mime="text/plain")
+        try:
+           model = whisper.load_model("base")  # You can use "tiny", "base", "small", "medium", "large"
+           result = model.transcribe(temp_path)
+           st.success("✅ Transcription successful!")
+           st.markdown(f"**Detected Language:** `{result['language']}`")
+           st.text_area("Transcribed Text:", value=result["text"], height=200)
 
-                except sr.UnknownValueError:
-                 st.error("Could not understand the audio.")
-                except sr.RequestError as e:
-                   st.error(f"API request error: {e}")
-                except Exception as e:
-                    st.error(f"Unexpected error: {e}")
+           st.download_button("📥 Download Transcript", result["text"], file_name="transcription.txt", mime="text/plain")
 
-    # Cleanup
-                os.remove(wav_path)
-                if uploaded_file.name.endswith(".mp3"):
-                     os.remove(temp_audio_path)
+        except Exception as e:
+          st.error(f"An error occurred: {e}")
+
+          os.remove(temp_path)
         
         
         
