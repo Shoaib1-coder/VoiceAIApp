@@ -197,72 +197,23 @@ def show_home():
         
         
     elif selected_page == "Voice Changer":
+        if selected_page == "Voice Changer":
         st.subheader("Voice Changer Page")
-        import pyaudio
-        import wave
-        import time
+        uploaded_file = st.file_uploader("Upload an audio file", type=["mp3", "wav"])
 
-        from pydub.playback import play
+        if uploaded_file is not None:
+           audio = AudioSegment.from_file(uploaded_file)
 
-        def change_pitch(audio, pitch_shift=5):
-    """Change the pitch of the audio"""
-         return audio._spawn(audio.raw_data, overrides={
-        "frame_rate": int(audio.frame_rate * (2 ** (pitch_shift / 12.0)))
-    }).set_frame_rate(audio.frame_rate)
+           pitch_shift = st.slider("Change Pitch (semitones)", -12, 12, 0)
+           speed = st.slider("Change Speed", 0.5, 2.0, 1.0)
 
-def change_speed(audio, speed=1.2):
-    """Change the speed of the audio"""
-    return audio.speedup(playback_speed=speed)
+           altered_audio = change_pitch(audio, pitch_shift)
+           altered_audio = change_speed(altered_audio, speed)
 
-def record_audio(filename="output.wav", duration=5):
-    """Record audio for a given duration"""
-    p = pyaudio.PyAudio()
+           st.audio(altered_audio.export(format="wav"), format="audio/wav")
 
-    print("Recording...")
-    stream = p.open(format=pyaudio.paInt16, channels=1,
-                    rate=44100, input=True,
-                    frames_per_buffer=1024)
-    frames = []
-    for _ in range(0, int(44100 / 1024 * duration)):
-        data = stream.read(1024)
-        frames.append(data)
-
-    print("Finished recording.")
-    stream.stop_stream()
-    stream.close()
-    p.terminate()
-
-    # Save the recording
-    wf = wave.open(filename, 'wb')
-    wf.setnchannels(1)
-    wf.setsampwidth(p.get_sample_size(pyaudio.paInt16))
-    wf.setframerate(44100)
-    wf.writeframes(b''.join(frames))
-    wf.close()
-
-def main():
-    # Step 1: Record Audio
-    record_audio("input.wav", duration=5)
-    
-    # Step 2: Load the recorded audio
-    audio = AudioSegment.from_wav("input.wav")
-    
-    # Step 3: Change the pitch of the audio
-    altered_audio = change_pitch(audio, pitch_shift=5)  # Change pitch by 5 semitones
-    
-    # Step 4: Change the speed of the audio
-    altered_audio = change_speed(altered_audio, speed=1.5)  # Increase playback speed by 1.5x
-    
-    # Step 5: Play the altered audio
-    play(altered_audio)
-    
-    # Step 6: Save the altered audio to a file
-    altered_audio.export("altered_output.wav", format="wav")
-
-    print("Altered audio saved as 'altered_output.wav'")
-
-if __name__ == "__main__":
-    main()
+          st.download_button("Download Altered Audio", altered_audio.export(format="wav"))
+)
 
     elif selected_page == "Sound Effects":
         st.subheader("Sound Effects Page")
