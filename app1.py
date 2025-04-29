@@ -141,7 +141,7 @@ def show_home():
 
     elif selected_page == "Speech to Text":
         st.subheader("Speech to Text Page")
-          st.subheader("Speech to Text Page")
+          
         st.title("🗣️ Speech to Text with Language Detection")
 
         uploaded_file = st.file_uploader("Upload an audio file (.mp3 or .wav only)", type=["mp3", "wav"])
