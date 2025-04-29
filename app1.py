@@ -128,4 +128,114 @@ def show_home():
               st.error("Selected voice is not available.")
 
 
+      
+        
+        
+   
+
+
+    elif selected_page == "Speech to Text":
+        st.subheader("Speech to Text Page")
+    elif selected_page == "Voice Changer":
+        st.subheader("Voice Changer Page")
+    elif selected_page == "Sound Effects":
+        st.subheader("Sound Effects Page")
+    elif selected_page == "Voice Isolator":
+        st.subheader("Voice Isolator Page")
+    elif selected_page == "AI Speech Classifier":
+        st.subheader("AI Speech Classifier Page")
+
+    # Logout button
+    if st.sidebar.button("Logout"):
+        st.session_state.logged_in = False
+        st.session_state.page = "Login"
+        st.rerun()                      
+
+
+# ----------------- LOGIN PAGE -----------------
+def show_login():
+    st.title("🔑 Login")
+
+    username = st.text_input("Username")
+    password = st.text_input("Password", type="password")
+
+    if st.button("Login"):
+        user = login_user(username, password)
+        if user:
+            st.success("Login Successful!")
+            st.session_state.logged_in = True
+            st.session_state.page = "Home"
+            st.rerun()  # Redirect to Home page
+        else:
+            st.error("Invalid username or password!")
+
+# ----------------- SIGN UP PAGE -----------------
+def show_signup():
+    st.title("📝 Sign Up")
+
+    username = st.text_input("Choose a Username")
+    password = st.text_input("Choose a Password", type="password")
+
+    if "signup_success" not in st.session_state:
+        st.session_state.signup_success = False
+
+    if st.button("Sign Up"):
+        if not username:
+            st.error("Please enter a username.")
+        elif not password:
+            st.error("Please enter a password.")
+        else:
+            try:
+                create_user(username, password)
+                st.session_state.signup_success = True
+            except Exception as e:
+                st.error(f"Error creating account: {e}")
+
+    # Show success message after signup
+    if st.session_state.signup_success:
+        st.success("Account created successfully! Please log in.")
+        #if st.button("Go to Login"):
+            #st.session_state.page = "Login"
+            #st.session_state.signup_success = False
+            #st.experimental_rerun()
+
+# ----------------- DOCUMENTATION PAGE -----------------
+def show_documentation():
+    st.title("📄 Documentation")
+    st.write("""
+    ### AI Voice Toolkit Documentation
+
+    - **Text to Speech**: Convert your text into human-like voice.
+    - **Speech to Text**: Convert spoken audio into written text.
+    - **Voice Changer**: Modify your voice pitch and tone.
+    - **Sound Effects**: Add background sound effects to your recordings.
+    - **Voice Isolator**: Remove noise and isolate voice clearly.
+    - **AI Speech Classifier**: Analyze and classify types of speech.
+
+    > Login is required only to access Home features. You can sign up easily!
+    """)
+
+# ----------------- PAGE CONTROLLER -----------------
+if selected == "llEleven":
+    show_llEleven()
+elif selected == "Home":
+    #if st.session_state.logged_in:
+        show_home()
+    #else:
+        #st.warning("Please login first!")
+        #show_login()
+
+elif selected == "Login":
+    st.session_state.page = "Login"
+    show_login()
+
+elif selected == "Sign up":
+    st.session_state.page = "Sign up"
+    show_signup()
+
+elif selected == "Docu":
+    st.session_state.page = "Documentation"
+    show_documentation()
+
+
 
