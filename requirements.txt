@@ -1,6 +1,6 @@
 streamlit
 streamlit-option-menu
 elevenlabs
+mysql-connector-python
 gtts
 google-generativeai
-mysql-connector-python
