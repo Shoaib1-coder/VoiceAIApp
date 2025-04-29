@@ -9,7 +9,7 @@ import time
 
 
 # ----------------- DATABASE FUNCTIONS -----------------
-def get_connection():
+#def get_connection():
     conn = mysql.connector.connect(
         host="host="local",
         user="root",  # Your MySQL username
