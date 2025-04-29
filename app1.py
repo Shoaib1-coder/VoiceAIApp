@@ -115,7 +115,7 @@ def show_home():
          else:
            with st.spinner("Generating speech with Gemini..."):
             try:
-                model = genai.GenerativeModel("gemini-pro")
+                model = genai.GenerativeModel(model_name="gemini-2.0-flash")
                 response = model.generate_content(GENERATION_PROMPT + "\n\n" + text_input)
                 spoken_text = response.text.strip()
 
