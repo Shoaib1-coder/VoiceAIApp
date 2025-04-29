@@ -11,7 +11,7 @@ import time
 # ----------------- DATABASE FUNCTIONS -----------------
 def get_connection():
     conn = mysql.connector.connect(
-        host="host="127.0.0.1",
+        host="host="local",
         user="root",  # Your MySQL username
         password="your_mysql_password",  # Your MySQL password
         database="your_database",  # Your MySQL database name 
@@ -216,11 +216,11 @@ def show_documentation():
 if selected == "llEleven":
     show_llEleven()
 elif selected == "Home":
-    if st.session_state.logged_in:
+    #if st.session_state.logged_in:
         show_home()
-    else:
-        st.warning("Please login first!")
-        show_login()
+    #else:
+        #st.warning("Please login first!")
+        #show_login()
 
 elif selected == "Login":
     st.session_state.page = "Login"
