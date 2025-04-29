@@ -2,11 +2,12 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 import mysql.connector
 from gtts import gTTS
+from langdetect import detect
 import google.generativeai as genai
 import os
 import tempfile
 import time
-from elevenlabs import generate, save, set_api_key, voices
+
 
 
 # ----------------- DATABASE FUNCTIONS -----------------
@@ -92,40 +93,36 @@ def show_home():
 
     # Show content based on the selected page in the sidebar
     if selected_page == "Text to Speech":
-        # Set your API key (you can also use environment variables for safety)
-        ELEVEN_API_KEY = st.secrets.get("ELEVEN_API_KEY") or "your-elevenlabs-api-key"
-        set_api_key(ELEVEN_API_KEY)
+        st.title("🗣️ Multilingual Text to Speech (TTS)")
+        st.markdown("Supports **20+ languages** including Urdu, Arabic, German, Chinese, English, Hindi and more.")
 
-# Streamlit UI
-        #st.set_page_config(page_title="🎙️ ElevenLabs TTS", layout="centered")
-        st.title("🎤 AI Voice Generator (ElevenLabs)")
-        st.markdown("Generate realistic speech using [ElevenLabs](https://www.elevenlabs.io)")
+        text = st.text_area("📝 Enter your text below:", height=200)
 
-        text = st.text_area("Enter text to convert to speech:", height=150)
-
-          # List of available voices
-        available_voices = voices()
-        voice_options = [voice.name for voice in available_voices]
-        selected_voice = st.selectbox("Choose a voice:", voice_options)
-        if st.button("Generate Speech"):
-          if not text.strip():
-           st.warning("Please enter some text.")
-        elif not selected_voice:
-           st.warning("Please select a voice.")
+        if st.button("🔊 Convert to Speech"):
+           if not text.strip():
+             st.warning("Please enter some text.")
         else:
-           voice_id = next((v.voice_id for v in available_voices if v.name == selected_voice), None)
-           if voice_id:
-               audio = generate(text=text, voice=voice_id, model="eleven_monolingual_v1")
-               filename = "output.mp3"
-               save(audio, filename)
-               st.audio(filename, format="audio/mp3")
+            try:
+            # Detect language
+              lang = detect(text)
+              st.info(f"Detected Language: `{lang}`")
 
-               with open(filename, "rb") as f:
+            # Generate speech
+              tts = gTTS(text=text, lang=lang)
+              temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".mp3")
+              tts.save(temp_file.name)
+
+            # Playback and download
+              st.audio(temp_file.name, format="audio/mp3")
+              with open(temp_file.name, "rb") as f:
                 st.download_button("Download Audio", f, file_name="speech.mp3", mime="audio/mpeg")
 
-               os.remove(filename)
-           else:
-              st.error("Selected voice is not available.")
+            # Cleanup
+              os.remove(temp_file.name)
+
+            except Exception as e:
+             st.error(f"An error occurred: {e}")
+
 
 
       
