@@ -198,6 +198,72 @@ def show_home():
         
     elif selected_page == "Voice Changer":
         st.subheader("Voice Changer Page")
+        import pyaudio
+        import wave
+        import time
+
+        from pydub.playback import play
+
+        def change_pitch(audio, pitch_shift=5):
+    """Change the pitch of the audio"""
+         return audio._spawn(audio.raw_data, overrides={
+        "frame_rate": int(audio.frame_rate * (2 ** (pitch_shift / 12.0)))
+    }).set_frame_rate(audio.frame_rate)
+
+def change_speed(audio, speed=1.2):
+    """Change the speed of the audio"""
+    return audio.speedup(playback_speed=speed)
+
+def record_audio(filename="output.wav", duration=5):
+    """Record audio for a given duration"""
+    p = pyaudio.PyAudio()
+
+    print("Recording...")
+    stream = p.open(format=pyaudio.paInt16, channels=1,
+                    rate=44100, input=True,
+                    frames_per_buffer=1024)
+    frames = []
+    for _ in range(0, int(44100 / 1024 * duration)):
+        data = stream.read(1024)
+        frames.append(data)
+
+    print("Finished recording.")
+    stream.stop_stream()
+    stream.close()
+    p.terminate()
+
+    # Save the recording
+    wf = wave.open(filename, 'wb')
+    wf.setnchannels(1)
+    wf.setsampwidth(p.get_sample_size(pyaudio.paInt16))
+    wf.setframerate(44100)
+    wf.writeframes(b''.join(frames))
+    wf.close()
+
+def main():
+    # Step 1: Record Audio
+    record_audio("input.wav", duration=5)
+    
+    # Step 2: Load the recorded audio
+    audio = AudioSegment.from_wav("input.wav")
+    
+    # Step 3: Change the pitch of the audio
+    altered_audio = change_pitch(audio, pitch_shift=5)  # Change pitch by 5 semitones
+    
+    # Step 4: Change the speed of the audio
+    altered_audio = change_speed(altered_audio, speed=1.5)  # Increase playback speed by 1.5x
+    
+    # Step 5: Play the altered audio
+    play(altered_audio)
+    
+    # Step 6: Save the altered audio to a file
+    altered_audio.export("altered_output.wav", format="wav")
+
+    print("Altered audio saved as 'altered_output.wav'")
+
+if __name__ == "__main__":
+    main()
+
     elif selected_page == "Sound Effects":
         st.subheader("Sound Effects Page")
     elif selected_page == "Voice Isolator":
