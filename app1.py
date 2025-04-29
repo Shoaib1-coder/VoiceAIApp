@@ -144,10 +144,15 @@ def show_home():
           
         st.title("🗣️ Speech to Text with Language Detection")
 
-        uploaded_file = st.file_uploader("Upload an audio file (.mp3 or .wav only)", type=["mp3", "wav"])
+        uploaded_file = st.file_uploader("Upload an audio file", type=["mp3", "wav"])
+        if uploaded_file is not None:
+            if uploaded_file.name.endswith(".mp3"):
+        # Proceed with processing the mp3 file
+              st.audio(uploaded_file)
+        else:
+              st.info("Please upload a file to proceed.")
 
-        if uploaded_file:
-          st.audio(uploaded_file)
+      
 
         with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_wav_file:
           if uploaded_file.name.endswith(".mp3"):
