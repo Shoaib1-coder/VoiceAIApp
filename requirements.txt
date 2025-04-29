@@ -1,7 +1,7 @@
 streamlit
 streamlit-option-menu
 langdetect
-speech_recognition
+torch
 pydub
 mysql-connector-python
 gtts
