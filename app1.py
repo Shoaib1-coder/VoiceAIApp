@@ -93,41 +93,41 @@ def show_home():
 
     # Show content based on the selected page in the sidebar
     if selected_page == "Text to Speech":
-        text = st.text_area("Enter text to convert to speech:")
+         st.title("🎤 AI Voice Generator (Multi-language)")
+         text = st.text_area("Enter text to convert to speech:")
 
-        if st.button("🔊 Convert to Speech"):
-            if not text.strip():
-               st.warning("Please enter some text.")
-        else:
-            try:
+# Optional cleanup of previously stored file
+         if "temp_audio_file" in st.session_state:
+          try:
+              os.remove(st.session_state["temp_audio_file"])
+          except FileNotFoundError:
+              pass
+          del st.session_state["temp_audio_file"]
+
+         if st.button("🔊 Convert to Speech"):
+           if not text.strip():
+             st.warning("Please enter some text.")
+           else:
+               try:
             # Detect language
-              lang = detect(text)
-              st.info(f"Detected Language: `{lang}`")
+                  lang = detect(text)
+                  st.info(f"Detected Language: `{lang}`")
 
             # Generate speech
-              tts = gTTS(text=text, lang=lang)
-              temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".mp3")
-              tts.save(temp_file.name)
+                  tts = gTTS(text=text, lang=lang)
+                  temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".mp3")
+                  tts.save(temp_file.name)
+
+            # Store filename to delete on next run
+                  st.session_state["temp_audio_file"] = temp_file.name
 
             # Playback and download
-              st.audio(temp_file.name, format="audio/mp3")
-              with open(temp_file.name, "rb") as f:
-                st.download_button("Download Audio", f, file_name="speech.mp3", mime="audio/mpeg")
+                  st.audio(temp_file.name, format="audio/mp3")
+                  with open(temp_file.name, "rb") as f:
+                   st.download_button("Download Audio", f, file_name="speech.mp3", mime="audio/mpeg")
 
-            # Delay deletion until app rerun
-              st.session_state["temp_audio_file"] = temp_file.name
-
-            except Exception as e:
-               st.error(f"An error occurred: {e}")
-
-# Optional: Clean up old audio file on next run
-            if "temp_audio_file" in st.session_state:
-             try:
-                os.remove(st.session_state["temp_audio_file"])
-                del st.session_state["temp_audio_file"]
-             except FileNotFoundError:
-                pass
-
+               except Exception as e:
+                     st.error(f"An error occurred: {e}")
 
 
       
@@ -238,6 +238,10 @@ elif selected == "Sign up":
 elif selected == "Docu":
     st.session_state.page = "Documentation"
     show_documentation()
+
+
+
+
 
 
 
