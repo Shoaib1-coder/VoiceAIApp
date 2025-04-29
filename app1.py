@@ -197,7 +197,7 @@ def show_home():
         
         
     elif selected_page == "Voice Changer":
-        if selected_page == "Voice Changer":
+        
         st.subheader("Voice Changer Page")
         uploaded_file = st.file_uploader("Upload an audio file", type=["mp3", "wav"])
 
