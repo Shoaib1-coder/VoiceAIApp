@@ -10,29 +10,29 @@ import time
 
 # ----------------- DATABASE FUNCTIONS -----------------
 #def get_connection():
-    conn = mysql.connector.connect(
-        host="host="local",
-        user="root",  # Your MySQL username
-        password="your_mysql_password",  # Your MySQL password
-        database="your_database",  # Your MySQL database name 
-        port=3306
-    )
-    return conn
+    #conn = mysql.connector.connect(
+        #host="host="local",
+        #user="root",  # Your MySQL username
+        #password="your_mysql_password",  # Your MySQL password
+        #database="your_database",  # Your MySQL database name 
+        #port=3306
+    #)
+    #return conn
 
 #def create_user(username, password):
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (username, password))
-    conn.commit()
-    conn.close()
+    #conn = get_connection()
+    #cursor = conn.cursor()
+    #cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (username, password))
+    #conn.commit()
+    #conn.close()
 
 #def login_user(username, password):
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM users WHERE username=%s AND password=%s", (username, password))
-    data = cursor.fetchone()
-    conn.close()
-    return data
+    #conn = get_connection()
+    #cursor = conn.cursor()
+    #cursor.execute("SELECT * FROM users WHERE username=%s AND password=%s", (username, password))
+    #data = cursor.fetchone()
+    #conn.close()
+    #return data
 
 # ----------------- SESSION SETUP -----------------
 if 'logged_in' not in st.session_state:
