@@ -11,7 +11,7 @@ import time
 # ----------------- DATABASE FUNCTIONS -----------------
 def get_connection():
     conn = mysql.connector.connect(
-        host="localhost",
+        host="host="127.0.0.1",
         user="root",  # Your MySQL username
         password="your_mysql_password",  # Your MySQL password
         database="your_database",  # Your MySQL database name 
