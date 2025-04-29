@@ -1,10 +1,10 @@
 streamlit
 streamlit-option-menu
-langdetect
-torch
-pydub
 mysql-connector-python
-gtts
+gTTS
+langdetect
 google-generativeai
-tempfile
+pydub
 whisper
+torch
+
