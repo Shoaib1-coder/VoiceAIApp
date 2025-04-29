@@ -97,7 +97,7 @@ def show_home():
         set_api_key(ELEVEN_API_KEY)
 
 # Streamlit UI
-        st.set_page_config(page_title="🎙️ ElevenLabs TTS", layout="centered")
+        #st.set_page_config(page_title="🎙️ ElevenLabs TTS", layout="centered")
         st.title("🎤 AI Voice Generator (ElevenLabs)")
         st.markdown("Generate realistic speech using [ElevenLabs](https://www.elevenlabs.io)")
 
