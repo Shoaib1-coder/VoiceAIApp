@@ -143,40 +143,41 @@ def show_home():
         st.subheader("Speech to Text Page")
         st.title("🗣️ Speech to Text with Language Detection")
 
-      uploaded_file = st.file_uploader("Upload an audio file", type=["mp3", "wav"])
+        uploaded_file = st.file_uploader("Upload an audio file", type=["mp3", "wav"])
 
-      if uploaded_file is not None:
-      st.audio(uploaded_file)
+        if uploaded_file is not None:
+         st.audio(uploaded_file)
 
-       with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_wav_file:
-        if uploaded_file.name.endswith(".mp3"):
-            audio = AudioSegment.from_mp3(uploaded_file)
-            audio.export(temp_wav_file.name, format="wav")
-        else:
-            temp_wav_file.write(uploaded_file.read())
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_wav_file:
+          if uploaded_file.name.endswith(".mp3"):
+             audio = AudioSegment.from_mp3(uploaded_file)
+             audio.export(temp_wav_file.name, format="wav")
+          else:
+             temp_wav_file.write(uploaded_file.read())
 
-    temp_path = temp_wav_file.name
+        temp_path = temp_wav_file.name
 
-    st.info("🔄 Transcribing using Whisper model...")
+        st.info("🔄 Transcribing using Whisper model...")
 
-    try:
-        model = whisper.load_model("base")  # You can also try "tiny", "small", etc.
-        result = model.transcribe(temp_path)
-        st.success("✅ Transcription successful!")
-        st.markdown(f"**Detected Language:** `{result['language']}`")
-        st.text_area("Transcribed Text:", value=result["text"], height=200)
+        try:
+          model = whisper.load_model("base")  # You can also try "tiny", "small", etc.
+          result = model.transcribe(temp_path)
+          st.success("✅ Transcription successful!")
+          st.markdown(f"**Detected Language:** `{result['language']}`")
+          st.text_area("Transcribed Text:", value=result["text"], height=200)
 
-        st.download_button("📥 Download Transcript", result["text"], file_name="transcription.txt", mime="text/plain")
+          st.download_button("📥 Download Transcript", result["text"], file_name="transcription.txt", mime="text/plain")
 
-    except Exception as e:
-        st.error(f"An error occurred during transcription: {e}")
+        except Exception as e:
+         st.error(f"An error occurred during transcription: {e}")
 
     # Clean up the temporary file
-    if os.path.exists(temp_path):
-        os.remove(temp_path)
+        if os.path.exists(temp_path):
+          os.remove(temp_path)
 
-   else:
-    st.info("Please upload a .mp3 or .wav file to begin transcription.")
+        else:
+         st.info("Please upload a .mp3 or .wav file to begin transcription.")
+        
 
        
         
