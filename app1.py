@@ -4,6 +4,8 @@ import mysql.connector
 from gtts import gTTS
 from langdetect import detect
 import google.generativeai as genai
+import speech_recognition as sr
+from pydub import AudioSegment
 import os
 import tempfile
 import time
@@ -138,6 +140,67 @@ def show_home():
 
     elif selected_page == "Speech to Text":
         st.subheader("Speech to Text Page")
+        st.title("🎧 Speech-to-Text Transcriber with Language Detection")
+
+        uploaded_file = st.file_uploader("Upload an audio file (.mp3 or .wav only)", type=["mp3", "wav"])
+
+        if uploaded_file:
+               st.audio(uploaded_file)
+
+    # Save the uploaded file to a temporary location
+               with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3" if uploaded_file.name.endswith(".mp3") else ".wav") as temp_audio:
+                temp_audio.write(uploaded_file.read())
+                temp_audio_path = temp_audio.name
+
+    # Convert mp3 to wav if necessary
+               if uploaded_file.name.endswith(".mp3"):
+                   audio = AudioSegment.from_mp3(temp_audio_path)
+                   wav_path = temp_audio_path.replace(".mp3", ".wav")
+                   audio.export(wav_path, format="wav")
+               else:
+                wav_path = temp_audio_path
+
+               recognizer = sr.Recognizer()
+               with sr.AudioFile(wav_path) as source:
+                st.info("Transcribing audio...")
+                audio_data = recognizer.record(source)
+                try:
+                  text = recognizer.recognize_google(audio_data)
+                  lang = detect(text)
+                  st.success("Transcription successful!")
+                  st.markdown(f"**Detected Language:** `{lang}`")
+                  st.text_area("Transcribed Text:", value=text, height=200)
+
+            # Download button for text
+                  st.download_button("Download Transcript", text, file_name="transcription.txt", mime="text/plain")
+
+                except sr.UnknownValueError:
+                 st.error("Could not understand the audio.")
+                except sr.RequestError as e:
+                   st.error(f"API request error: {e}")
+                except Exception as e:
+                    st.error(f"Unexpected error: {e}")
+
+    # Cleanup
+                os.remove(wav_path)
+                if uploaded_file.name.endswith(".mp3"):
+                     os.remove(temp_audio_path)
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
     elif selected_page == "Voice Changer":
         st.subheader("Voice Changer Page")
     elif selected_page == "Sound Effects":
