@@ -1,8 +1,11 @@
 import streamlit as st
-from streamlit_lottie import st_lottie
-import requests
 from streamlit_option_menu import option_menu
 import mysql.connector
+from gtts import gTTS
+import google.generativeai as genai
+import os
+import tempfile
+import time
 
 
 # ----------------- DATABASE FUNCTIONS -----------------
@@ -89,11 +92,7 @@ def show_home():
     if selected_page == "Text to Speech":
         
         
-       from gtts import gTTS
-       import google.generativeai as genai
-       import os
-       import tempfile
-       import time
+       
 
 # Load API key securely from Streamlit secrets
        genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
