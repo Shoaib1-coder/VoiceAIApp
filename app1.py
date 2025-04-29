@@ -14,7 +14,7 @@ def get_connection():
         host="localhost",
         user="root",  # Your MySQL username
         password="your_mysql_password",  # Your MySQL password
-        database="your_database"  # Your MySQL database name 
+        database="your_database",  # Your MySQL database name 
         port=3306
     )
     return conn
