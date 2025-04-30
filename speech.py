@@ -8,7 +8,7 @@ import tempfile
 # Configure Gemini
 def configure_gemini(api_key):
     genai.configure(api_key=api_key)
-    return genai.GenerativeModel('gemini-pro')
+    return genai.GenerativeModel(model_name="gemini-2.0-flash")
 
 def convert_audio(audio_file):
     """Convert audio to WAV format in memory"""
