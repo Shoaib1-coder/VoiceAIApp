@@ -143,59 +143,69 @@ def show_home():
     elif selected_page == "Speech to Text":
         st.subheader("Speech to Text Page")
         st.title("🎙️ Speech to Text Converter")
-        st.write("Upload or record audio, convert to text, detect language, and download results.")
+        uploaded_file = st.file_uploader("Upload an audio file", type=["mp3", "wav"])
 
-        recognizer = sr.Recognizer()
+        if uploaded_file is not None:
+           audio = AudioSegment.from_file(uploaded_file)
 
-# Recording from microphone
-        if st.button("🎤 Start Recording"):
-          with sr.Microphone() as source:
-            st.info("Recording... Speak now!")
-            audio = recognizer.listen(source)
-            st.success("Recording complete!")
+           pitch_shift = st.slider("Change Pitch (semitones)", -12, 12, 0)
+           speed = st.slider("Change Speed", 0.5, 2.0, 1.0)
 
-            try:
-               text = recognizer.recognize_google(audio)
-               language = detect(text)
-               st.text_area("📝 Transcribed Text", text, height=150)
-               st.write(f"🌍 Detected Language: `{language}`")
+           altered_audio = change_pitch(audio, pitch_shift)
+           altered_audio = change_speed(altered_audio, speed)
 
-            # Download text
-               st.download_button("⬇️ Download Text", text, file_name="transcription.txt")
+           st.audio(altered_audio.export(format="wav"), format="audio/wav")
 
-            except sr.UnknownValueError:
-              st.error("Could not understand audio.")
-            except sr.RequestError:
-              st.error("Could not request results from Google Speech Recognition service.")
+           st.download_button("Download Altered Audio", altered_audio.export(format="wav"))
 
-# Uploading audio files
-          uploaded_file = st.file_uploader("📂 Upload Audio File (WAV/MP3/FLAC)", type=["wav", "mp3", "flac"])
-          if uploaded_file is not None:
-           file_format = uploaded_file.name.split('.')[-1]
+    elif selected_page == "Sound Effects":
+        st.subheader("Sound Effects Page")
+        st.title("🎤 Speech to Text Converter with Language Detection")
 
-    # Convert to WAV for compatibility
-           audio_bytes = uploaded_file.read()
-           audio_data = AudioSegment.from_file(BytesIO(audio_bytes), format=file_format)
-           wav_io = BytesIO()
-           audio_data.export(wav_io, format="wav")
-           wav_io.seek(0)
+        uploaded_file = st.file_uploader("Upload audio file (MP3, WAV, FLAC)", type=["mp3", "wav", "flac", "ogg", "m4a"])
 
-           with sr.AudioFile(wav_io) as source:
-             audio = recognizer.record(source)
+        def convert_audio_to_wav(file_path, output_path):
+         audio = AudioSegment.from_file(file_path)
+         audio.export(output_path, format="wav")
+         return output_path
 
-             try:
-               text = recognizer.recognize_google(audio)
-               language = detect(text)
-               st.text_area("📝 Transcribed Text", text, height=150)
-               st.write(f"🌍 Detected Language: `{language}`")
+        if uploaded_file is not None:
+    # Save uploaded file temporarily
+         file_id = str(uuid.uuid4())
+         input_path = f"temp_{file_id}.{uploaded_file.name.split('.')[-1]}"
+        with open(input_path, "wb") as f:
+          f.write(uploaded_file.read())
 
-            # Download text
-               st.download_button("⬇️ Download Text", text, file_name="transcription.txt")
+        wav_path = f"converted_{file_id}.wav"
+        try:
+           convert_audio_to_wav(input_path, wav_path)
 
-             except sr.UnknownValueError:
-              st.error("Could not understand audio.")
-             except sr.RequestError:
-              st.error("Could not request results from Google Speech Recognition service.")
+           recognizer = sr.Recognizer()
+           with sr.AudioFile(wav_path) as source:
+             st.info("Transcribing audio...")
+             audio_data = recognizer.record(source)
+             text = recognizer.recognize_google(audio_data)
+
+             lang = detect(text)
+             st.success("Transcription complete!")
+             st.write("**Detected Language:**", lang)
+             st.text_area("Transcribed Text", text, height=200)
+
+            # Allow download
+             txt_file = f"transcript_{file_id}.txt"
+             with open(txt_file, "w", encoding='utf-8') as f:
+                f.write(text)
+             with open(txt_file, "rb") as f:
+                st.download_button("Download Transcription", f, file_name="transcription.txt")
+
+        except Exception as e:
+         st.error(f"Error: {e}")
+
+    # Clean up
+        os.remove(input_path)
+        if os.path.exists(wav_path):
+          os.remove(wav_path)
+        
         
 
         
