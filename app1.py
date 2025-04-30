@@ -5,6 +5,7 @@ from speech import speech_classifier_app
 from voice_isolator import main as voice_isolator_main
 from sound_effects import main as sound_effects_main
 from speech_to_text import main as speech_to_text
+from text_to_speech import main as tts_main
 import mysql.connector
 from gtts import gTTS
 from langdetect import detect
@@ -99,44 +100,12 @@ def show_home():
 
     # Show content based on the selected page in the sidebar
     if selected_page == "Text to Speech":
+        tts_main()
         
         
        
 
-# Load API key securely from Streamlit secrets
-       genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 
-
-       GENERATION_PROMPT = "Convert the following text into a natural-sounding spoken version:"
-
-
-
-       st.title("🎙 Text to Speech using Gemini + gTTS")
-       st.write("Enter some text and hear it spoken aloud with realistic speech generation.")
-
-# Text input
-       text_input = st.text_area(" Enter your text here:", height=200)
-
-       if st.button(" Generate Speech", use_container_width=True):
-         if text_input.strip() == "":
-            st.warning("Please enter some text before generating speech.")
-         else:
-           with st.spinner("Generating speech ..."):
-            try:
-                model = genai.GenerativeModel(model_name="gemini-2.0-flash")
-                response = model.generate_content(GENERATION_PROMPT + "\n\n" + text_input)
-                spoken_text = response.text.strip()
-
-                # Convert to speech using gTTS
-                tts = gTTS(spoken_text)
-                temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".mp3")
-                tts.save(temp_file.name)
-
-                st.success("Speech generated successfully!")
-                st.audio(temp_file.name, format="audio/mp3")
-
-            except Exception as e:
-                st.error(f"Error: {e}")
 
 
     elif selected_page == "Speech to Text":
