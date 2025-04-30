@@ -2,36 +2,49 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 import mysql.connector
 from gtts import gTTS
+from langdetect import detect
 import google.generativeai as genai
+from io import BytesIO
+import speech_recognition as sr
+from pydub import AudioSegment
+import uuid
+from voice_changer import main as voice_changer_main
+from speech import speech_classifier_app
+from voice_isolator import main as voice_isolator_main
+from sound_effects import main as sound_effects_main
+from speech_to_text import main as speech_to_text_main
+
 import os
 import tempfile
 import time
 
 
+
 # ----------------- DATABASE FUNCTIONS -----------------
-def get_connection():
-    conn = mysql.connector.connect(
-        host="localhost",
-        user="root",  # Your MySQL username
-        password="your_mysql_password",  # Your MySQL password
-        database="your_database"  # Your MySQL database name
-    )
-    return conn
+#def get_connection():
+    #conn = mysql.connector.connect(
+        #host="host="local",
+        #user="root",  # Your MySQL username
+        #password="your_mysql_password",  # Your MySQL password
+        #database="your_database",  # Your MySQL database name 
+        #port=3306
+    #)
+    #return conn
 
-def create_user(username, password):
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (username, password))
-    conn.commit()
-    conn.close()
+#def create_user(username, password):
+    #conn = get_connection()
+    #cursor = conn.cursor()
+    #cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (username, password))
+    #conn.commit()
+    #conn.close()
 
-def login_user(username, password):
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM users WHERE username=%s AND password=%s", (username, password))
-    data = cursor.fetchone()
-    conn.close()
-    return data
+#def login_user(username, password):
+    #conn = get_connection()
+    #cursor = conn.cursor()
+    #cursor.execute("SELECT * FROM users WHERE username=%s AND password=%s", (username, password))
+    #data = cursor.fetchone()
+    #conn.close()
+    #return data
 
 # ----------------- SESSION SETUP -----------------
 if 'logged_in' not in st.session_state:
@@ -90,56 +103,91 @@ def show_home():
 
     # Show content based on the selected page in the sidebar
     if selected_page == "Text to Speech":
+         st.title("🎤 AI Voice Generator (Multi-language)")
+         text = st.text_area("Enter text to convert to speech:")
+
+# Optional cleanup of previously stored file
+         if "temp_audio_file" in st.session_state:
+          try:
+              os.remove(st.session_state["temp_audio_file"])
+          except FileNotFoundError:
+              pass
+          del st.session_state["temp_audio_file"]
+
+         if st.button("🔊 Convert to Speech"):
+           if not text.strip():
+             st.warning("Please enter some text.")
+           else:
+               try:
+            # Detect language
+                  lang = detect(text)
+                  st.info(f"Detected Language: `{lang}`")
+
+            # Generate speech
+                  tts = gTTS(text=text, lang=lang)
+                  temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".mp3")
+                  tts.save(temp_file.name)
+
+            # Store filename to delete on next run
+                  st.session_state["temp_audio_file"] = temp_file.name
+
+            # Playback and download
+                  st.audio(temp_file.name, format="audio/mp3")
+                  with open(temp_file.name, "rb") as f:
+                   st.download_button("Download Audio", f, file_name="speech.mp3", mime="audio/mpeg")
+
+               except Exception as e:
+                     st.error(f"An error occurred: {e}")
+
+
+      
         
         
-       
-
-# Load API key securely from Streamlit secrets
-       genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
-
-# Gemini prompt template
-       GENERATION_PROMPT = "Convert the following text into a natural-sounding spoken version:"
-
-#st.set_page_config(page_title="🎤 Gemini TTS App", page_icon="🔊")
-
-       st.title("🎙️ Text to Speech using Gemini + gTTS")
-       st.write("Enter some text and hear it spoken aloud with realistic speech generation.")
-
-# Text input
-       text_input = st.text_area("📝 Enter your text here:", height=200)
-
-       if st.button("🔊 Generate Speech", use_container_width=True):
-         if text_input.strip() == "":
-            st.warning("Please enter some text before generating speech.")
-         else:
-           with st.spinner("Generating speech with Gemini..."):
-            try:
-                model = genai.GenerativeModel("gemini-pro")
-                response = model.generate_content(GENERATION_PROMPT + "\n\n" + text_input)
-                spoken_text = response.text.strip()
-
-                # Convert to speech using gTTS
-                tts = gTTS(spoken_text)
-                temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".mp3")
-                tts.save(temp_file.name)
-
-                st.success("Speech generated successfully!")
-                st.audio(temp_file.name, format="audio/mp3")
-
-            except Exception as e:
-                st.error(f"Error: {e}")
+   
 
 
     elif selected_page == "Speech to Text":
-        st.subheader("Speech to Text Page")
+        speech_to_text_main()
+       
+        
+        
+
+        
+        
+        
+        
+
+       
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
     elif selected_page == "Voice Changer":
-        st.subheader("Voice Changer Page")
+        
+        
+        voice_changer_main()
+        
+
+
     elif selected_page == "Sound Effects":
-        st.subheader("Sound Effects Page")
+        sound_effects_main() 
     elif selected_page == "Voice Isolator":
-        st.subheader("Voice Isolator Page")
+        voice_isolator_main()
     elif selected_page == "AI Speech Classifier":
-        st.subheader("AI Speech Classifier Page")
+        speech_classifier_app() 
+        
 
     # Logout button
     if st.sidebar.button("Logout"):
@@ -149,21 +197,21 @@ def show_home():
 
 
 # ----------------- LOGIN PAGE -----------------
-def show_login():
-    st.title("🔑 Login")
+# def show_login():
+#     st.title("🔑 Login")
 
-    username = st.text_input("Username")
-    password = st.text_input("Password", type="password")
+#     username = st.text_input("Username")
+#     password = st.text_input("Password", type="password")
 
-    if st.button("Login"):
-        user = login_user(username, password)
-        if user:
-            st.success("Login Successful!")
-            st.session_state.logged_in = True
-            st.session_state.page = "Home"
-            st.rerun()  # Redirect to Home page
-        else:
-            st.error("Invalid username or password!")
+#     if st.button("Login"):
+#         user = #login_user(username, password)
+#         if user:
+#             st.success("Login Successful!")
+#             st.session_state.logged_in = True
+#             st.session_state.page = "Home"
+#             st.rerun()  # Redirect to Home page
+#         else:
+#             st.error("Invalid username or password!")
 
 # ----------------- SIGN UP PAGE -----------------
 def show_signup():
@@ -182,7 +230,7 @@ def show_signup():
             st.error("Please enter a password.")
         else:
             try:
-                create_user(username, password)
+                #create_user(username, password)
                 st.session_state.signup_success = True
             except Exception as e:
                 st.error(f"Error creating account: {e}")
@@ -215,15 +263,15 @@ def show_documentation():
 if selected == "llEleven":
     show_llEleven()
 elif selected == "Home":
-    if st.session_state.logged_in:
+    #if st.session_state.logged_in:
         show_home()
-    else:
-        st.warning("Please login first!")
-        show_login()
+    #else:
+        #st.warning("Please login first!")
+        #show_login()
 
 elif selected == "Login":
     st.session_state.page = "Login"
-    show_login()
+    #show_login()
 
 elif selected == "Sign up":
     st.session_state.page = "Sign up"
@@ -232,6 +280,3 @@ elif selected == "Sign up":
 elif selected == "Docu":
     st.session_state.page = "Documentation"
     show_documentation()
-
-
-
