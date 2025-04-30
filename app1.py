@@ -58,7 +58,7 @@ selected = option_menu(
 )
 def show_llEleven():
      st.title("Welcome to My MY llElevenlab App") 
-     st.subheader(" GO to Home My Use Features)
+     st.subheader(" GO to Home My Use Features")
      st.subheader(" In the ancient land of Eldoria, where the skies were painted with shades of mystic hues and the forests whispered secrets of old, there existed a dragon named Zephyros. Unlike the fearsome tales of dragons that plagued human hearts with terror, Zephyros was a creature of wonder and wisdom, revered by all who knew of his existence.")
      st.text("you can work with  AI chatbot and Text to speech and speech to text and voice cloning ,voice changer,AI Speech Classifier ")            
  
@@ -68,7 +68,7 @@ def show_llEleven():
      
      st.markdown(
             """
-            <h1 style='font-size: 3.2em; color: #4A90E2;'>🎙️ Create the Most <span style='color:#FF4B4B;'>Realistic Speech</span></h1>
+            <h1 style='font-size: 3.2em; color: #4A90E2;'>🎙 Create the Most <span style='color:#FF4B4B;'>Realistic Speech</span></h1>
             <h3 style='color: #555;'>with our AI Audio Platform</h3>
             <p style='font-size: 1.2em; color: #666;'>
                 Pioneering research in <strong>Text to Speech</strong>, <strong>AI Voice Generation</strong>, and beyond.
@@ -79,19 +79,19 @@ def show_llEleven():
 
         
 
-# -------------- Footer --------------
+
         
      st.markdown("""
       <hr>
-      <center style="color: red;">Made with ❤ using Streamlit • © 2025 VoiceAI</center>
+      <center style="color: red;">Made by Shoaib • © 2025 VoiceAI</center>
       """, unsafe_allow_html=True)   
 
-# ----------------- HOME PAGE -----------------
+
 def show_home():
     
 
     # Sidebar for navigation between different pages
-    st.sidebar.title("🎧 AI Voice Toolkit")
+    st.sidebar.title(" AI Voice Toolkit")
     selected_page = st.sidebar.radio(
         "Navigate",
         ["Text to Speech", "Speech to Text", "Voice Changer", "Sound Effects", "Voice Isolator", "AI Speech Classifier"]
@@ -106,7 +106,7 @@ def show_home():
 # Load API key securely from Streamlit secrets
        genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 
-# Gemini prompt template
+
        GENERATION_PROMPT = "Convert the following text into a natural-sounding spoken version:"
 
 
@@ -151,14 +151,14 @@ def show_home():
         speech_classifier_app() 
         
 
-    # Logout button
+    
     if st.sidebar.button("Logout"):
         st.session_state.logged_in = False
         st.session_state.page = "Login"
         st.rerun()                      
 
 
-# ----------------- LOGIN PAGE -----------------
+
  def show_login():
      st.title(" Login")
 
@@ -177,7 +177,7 @@ def show_home():
 
 # ----------------- SIGN UP PAGE -----------------
 def show_signup():
-    st.title("📝 Sign Up")
+    st.title(" Sign Up")
 
     username = st.text_input("Choose a Username")
     password = st.text_input("Choose a Password", type="password")
@@ -207,9 +207,9 @@ def show_signup():
 
 # ----------------- DOCUMENTATION PAGE -----------------
 def show_documentation():
-    st.title("📄 Documentation")
+    st.title(" Documentation")
     st.write("""
-    ### AI Voice Toolkit Documentation
+    
 
     - **Text to Speech**: Convert your text into human-like voice.
     - **Speech to Text**: Convert spoken audio into written text.
@@ -221,7 +221,7 @@ def show_documentation():
     > Login is required only to access Home features. You can sign up easily!
     """)
 
-# ----------------- PAGE CONTROLLER -----------------
+
 if selected == "llEleven":
     show_llEleven()
 elif selected == "Home":
