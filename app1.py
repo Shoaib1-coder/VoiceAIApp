@@ -7,7 +7,7 @@ import google.generativeai as genai
 from io import BytesIO
 import speech_recognition as sr
 from pydub import AudioSegment
-import whisper
+
 import os
 import tempfile
 import time
@@ -222,20 +222,7 @@ def show_home():
     elif selected_page == "Voice Changer":
         
         st.subheader("Voice Changer Page")
-        uploaded_file = st.file_uploader("Upload an audio file", type=["mp3", "wav"])
-
-        if uploaded_file is not None:
-           audio = AudioSegment.from_file(uploaded_file)
-
-           pitch_shift = st.slider("Change Pitch (semitones)", -12, 12, 0)
-           speed = st.slider("Change Speed", 0.5, 2.0, 1.0)
-
-           altered_audio = change_pitch(audio, pitch_shift)
-           altered_audio = change_speed(altered_audio, speed)
-
-           st.audio(altered_audio.export(format="wav"), format="audio/wav")
-
-           st.download_button("Download Altered Audio", altered_audio.export(format="wav"))
+        
 
 
     elif selected_page == "Sound Effects":
