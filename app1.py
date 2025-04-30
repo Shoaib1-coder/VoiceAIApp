@@ -113,7 +113,7 @@ def show_home():
         tts_main()
        
     elif selected_page == "Speech to Text":
-        speech_to_text()
+         speech_to_text()
       
         
     elif selected_page == "Voice Changer":
