@@ -148,54 +148,55 @@ def show_home():
         recognizer = sr.Recognizer()
 
 # Recording from microphone
-       if st.button("🎤 Start Recording"):
-        with sr.Microphone() as source:
-          st.info("Recording... Speak now!")
-          audio = recognizer.listen(source)
-          st.success("Recording complete!")
-
-          try:
-             text = recognizer.recognize_google(audio)
-             language = detect(text)
-             st.text_area("📝 Transcribed Text", text, height=150)
-             st.write(f"🌍 Detected Language: `{language}`")
-
-            # Download text
-             st.download_button("⬇️ Download Text", text, file_name="transcription.txt")
-
-          except sr.UnknownValueError:
-            st.error("Could not understand audio.")
-          except sr.RequestError:
-            st.error("Could not request results from Google Speech Recognition service.")
-
-# Uploading audio files
-       uploaded_file = st.file_uploader("📂 Upload Audio File (WAV/MP3/FLAC)", type=["wav", "mp3", "flac"])
-       if uploaded_file is not None:
-         file_format = uploaded_file.name.split('.')[-1]
-
-    # Convert to WAV for compatibility
-         audio_bytes = uploaded_file.read()
-         audio_data = AudioSegment.from_file(BytesIO(audio_bytes), format=file_format)
-         wav_io = BytesIO()
-         audio_data.export(wav_io, format="wav")
-         wav_io.seek(0)
-
-         with sr.AudioFile(wav_io) as source:
-            audio = recognizer.record(source)
+        if st.button("🎤 Start Recording"):
+          with sr.Microphone() as source:
+            st.info("Recording... Speak now!")
+            audio = recognizer.listen(source)
+            st.success("Recording complete!")
 
             try:
-              text = recognizer.recognize_google(audio)
-              language = detect(text)
-              st.text_area("📝 Transcribed Text", text, height=150)
-              st.write(f"🌍 Detected Language: `{language}`")
+               text = recognizer.recognize_google(audio)
+               language = detect(text)
+               st.text_area("📝 Transcribed Text", text, height=150)
+               st.write(f"🌍 Detected Language: `{language}`")
 
             # Download text
-              st.download_button("⬇️ Download Text", text, file_name="transcription.txt")
+               st.download_button("⬇️ Download Text", text, file_name="transcription.txt")
 
             except sr.UnknownValueError:
               st.error("Could not understand audio.")
             except sr.RequestError:
               st.error("Could not request results from Google Speech Recognition service.")
+
+# Uploading audio files
+          uploaded_file = st.file_uploader("📂 Upload Audio File (WAV/MP3/FLAC)", type=["wav", "mp3", "flac"])
+          if uploaded_file is not None:
+           file_format = uploaded_file.name.split('.')[-1]
+
+    # Convert to WAV for compatibility
+           audio_bytes = uploaded_file.read()
+           audio_data = AudioSegment.from_file(BytesIO(audio_bytes), format=file_format)
+           wav_io = BytesIO()
+           audio_data.export(wav_io, format="wav")
+           wav_io.seek(0)
+
+           with sr.AudioFile(wav_io) as source:
+             audio = recognizer.record(source)
+
+             try:
+               text = recognizer.recognize_google(audio)
+               language = detect(text)
+               st.text_area("📝 Transcribed Text", text, height=150)
+               st.write(f"🌍 Detected Language: `{language}`")
+
+            # Download text
+               st.download_button("⬇️ Download Text", text, file_name="transcription.txt")
+
+             except sr.UnknownValueError:
+              st.error("Could not understand audio.")
+             except sr.RequestError:
+              st.error("Could not request results from Google Speech Recognition service.")
+        
 
         
         
