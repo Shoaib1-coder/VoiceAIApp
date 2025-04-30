@@ -4,6 +4,9 @@ import mysql.connector
 from gtts import gTTS
 from langdetect import detect
 import google.generativeai as genai
+from io import BytesIO
+import speech_recognition as sr
+
 
 from pydub import AudioSegment
 import whisper
@@ -141,42 +144,64 @@ def show_home():
 
     elif selected_page == "Speech to Text":
         st.subheader("Speech to Text Page")
-        st.title("🗣️ Speech to Text with Language Detection")
+        st.title("🎙️ Speech to Text Converter")
+        st.write("Upload or record audio, convert to text, detect language, and download results.")
 
-        uploaded_file = st.file_uploader("Upload an audio file", type=["mp3", "wav"])
+        recognizer = sr.Recognizer()
 
-        if uploaded_file is not None:
-         st.audio(uploaded_file)
+# Recording from microphone
+       if st.button("🎤 Start Recording"):
+        with sr.Microphone() as source:
+          st.info("Recording... Speak now!")
+          audio = recognizer.listen(source)
+          st.success("Recording complete!")
 
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_wav_file:
-          if uploaded_file.name.endswith(".mp3"):
-             audio = AudioSegment.from_mp3(uploaded_file)
-             audio.export(temp_wav_file.name, format="wav")
-          else:
-             temp_wav_file.write(uploaded_file.read())
+          try:
+             text = recognizer.recognize_google(audio)
+             language = detect(text)
+             st.text_area("📝 Transcribed Text", text, height=150)
+             st.write(f"🌍 Detected Language: `{language}`")
 
-        temp_path = temp_wav_file.name
+            # Download text
+             st.download_button("⬇️ Download Text", text, file_name="transcription.txt")
 
-        st.info("🔄 Transcribing using Whisper model...")
+          except sr.UnknownValueError:
+            st.error("Could not understand audio.")
+          except sr.RequestError:
+            st.error("Could not request results from Google Speech Recognition service.")
 
-        try:
-          model = whisper.load_model("base")  # You can also try "tiny", "small", etc.
-          result = model.transcribe(temp_path)
-          st.success("✅ Transcription successful!")
-          st.markdown(f"**Detected Language:** `{result['language']}`")
-          st.text_area("Transcribed Text:", value=result["text"], height=200)
+# Uploading audio files
+       uploaded_file = st.file_uploader("📂 Upload Audio File (WAV/MP3/FLAC)", type=["wav", "mp3", "flac"])
+       if uploaded_file is not None:
+         file_format = uploaded_file.name.split('.')[-1]
 
-          st.download_button("📥 Download Transcript", result["text"], file_name="transcription.txt", mime="text/plain")
+    # Convert to WAV for compatibility
+         audio_bytes = uploaded_file.read()
+         audio_data = AudioSegment.from_file(BytesIO(audio_bytes), format=file_format)
+         wav_io = BytesIO()
+         audio_data.export(wav_io, format="wav")
+         wav_io.seek(0)
 
-        except Exception as e:
-         st.error(f"An error occurred during transcription: {e}")
+         with sr.AudioFile(wav_io) as source:
+            audio = recognizer.record(source)
 
-    # Clean up the temporary file
-        if os.path.exists(temp_path):
-          os.remove(temp_path)
+            try:
+              text = recognizer.recognize_google(audio)
+              language = detect(text)
+              st.text_area("📝 Transcribed Text", text, height=150)
+              st.write(f"🌍 Detected Language: `{language}`")
 
-        else:
-         st.info("Please upload a .mp3 or .wav file to begin transcription.")
+            # Download text
+              st.download_button("⬇️ Download Text", text, file_name="transcription.txt")
+
+            except sr.UnknownValueError:
+              st.error("Could not understand audio.")
+            except sr.RequestError:
+              st.error("Could not request results from Google Speech Recognition service.")
+
+        
+        
+        
         
 
        
