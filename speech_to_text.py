@@ -8,7 +8,7 @@ import langdetect
 
 st.title("Speech to Text")
 
-# Custom CSS
+
 st.markdown("""
 <style>
     .stAudio {
@@ -101,7 +101,7 @@ def transcribe_audio(audio_buffer, language='auto'):
             return "API unavailable", "Unknown"
 
 def main():
-    st.title("🗣️ Universal Speech-to-Text Converter")
+    st.title(" Speech-to-Text Converter")
     st.markdown("Upload audio files in any format to convert speech to text with automatic language detection")
     
     uploaded_file = st.file_uploader(
