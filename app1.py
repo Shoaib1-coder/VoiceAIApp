@@ -94,6 +94,7 @@ def show_home():
     # Sidebar for navigation between different pages
     st.sidebar.title(" AI Voice Toolkit")
     selected_page = st.sidebar.radio(
+         "Navigate",
         
         ["Text to Speech", "Speech to Text", "Voice Changer", "Sound Effects", "Voice Isolator", "AI Speech Classifier"]
     )
