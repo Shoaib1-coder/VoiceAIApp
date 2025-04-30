@@ -96,12 +96,12 @@ def show_home():
     selected_page = st.sidebar.radio(
          "Navigate",
         
-        ["Text to Speech", "Speech to Text", "Voice Changer", "Sound Effects", "Voice Isolator", "AI Speech Classifier"]
+        [ "AI Chatbot","Text to Speech", "Speech to Text", "Voice Changer", "Sound Effects", "Voice Isolator", "AI Speech Classifier"]
     )
 
     # Show content based on the selected page in the sidebar
-    if selected_page == "Text to Speech":
-        tts_main()
+    if selected_page == "AI Chatbot":
+        
         
         
        
@@ -109,15 +109,22 @@ def show_home():
 
 
 
+    elif selected_page == "Text to Speech":
+        tts_main()
+       
     elif selected_page == "Speech to Text":
         speech_to_text()
+      
+        
     elif selected_page == "Voice Changer":
-       voice_changer_main()
+        voice_changer_main()
+         
     elif selected_page == "Sound Effects":
-        sound_effects_main() 
+        sound_effects_main()
+        
     elif selected_page == "Voice Isolator":
         voice_isolator_main()
-    elif selected_page == "AI Speech Classifier":
+     elif selected_page == "AI Speech Classifier":
         speech_classifier_app() 
         
 
