@@ -4,10 +4,10 @@ SpeechRecognition
 pydub
 langdetect
 gTTS
-ffmpeg-python
+
 google-generativeai
 mysql-connector-python
-tempfile
+
 numpy
 librosa
 soundfile
