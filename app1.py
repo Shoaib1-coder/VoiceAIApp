@@ -166,7 +166,7 @@ def show_login():
     password = st.text_input("Password", type="password")
 
     if st.button("Login"):
-      user = #login_user(username, password)
+      user = login_user(username, password)
         if user:
              st.success("Login Successful!")
              st.session_state.logged_in = True
