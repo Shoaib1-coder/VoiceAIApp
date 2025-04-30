@@ -69,7 +69,7 @@ def show_llEleven():
      
      st.markdown(
             """
-            <h1 style='font-size: 3.2em; color: #4A90E2;'>🎙 Create the Most <span style='color:#FF4B4B;'>Realistic Speech</span></h1>
+            <h1 style='font-size: 3.2em; color: #4A90E2;'> Create the Most <span style='color:#FF4B4B;'>Realistic Speech</span></h1>
             <h3 style='color: #555;'>with our AI Audio Platform</h3>
             <p style='font-size: 1.2em; color: #666;'>
                 Pioneering research in <strong>Text to Speech</strong>, <strong>AI Voice Generation</strong>, and beyond.
@@ -94,7 +94,7 @@ def show_home():
     # Sidebar for navigation between different pages
     st.sidebar.title(" AI Voice Toolkit")
     selected_page = st.sidebar.radio(
-        "Navigate",
+        
         ["Text to Speech", "Speech to Text", "Voice Changer", "Sound Effects", "Voice Isolator", "AI Speech Classifier"]
     )
 
