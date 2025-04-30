@@ -57,7 +57,7 @@ def classify_speech(audio_file, gemini_api_key):
         return None
 
 def speech_classifier_app():
-    st.title("🎙 AI Speech Emotion Classifier")
+    st.title(" AI Speech Emotion Classifier")
     st.markdown("Upload an audio file to detect emotional tone using Google Gemini")
     
     # Get Gemini API key from Streamlit secrets
