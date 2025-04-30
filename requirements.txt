@@ -9,4 +9,5 @@ whisper
 torch
 pyaudio
 wave
+SpeechRecognition
 
