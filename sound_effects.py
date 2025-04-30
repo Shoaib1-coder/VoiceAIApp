@@ -5,10 +5,10 @@ import soundfile as sf
 from io import BytesIO
 import matplotlib.pyplot as plt
 
-# Page Config
+
 st.subheader("Sound Effects Page")
 
-# Custom CSS
+
 st.markdown("""
 <style>
     .stAudio {
@@ -57,17 +57,17 @@ def apply_effect(audio_bytes, effect_name, **params):
         y_mag = np.abs(y_fft)
         y_eff = librosa.istft(y_mag * np.exp(1j * np.angle(y_fft)))
     
-    else:  # No effect
+    else:  
         y_eff = y
     
-    # Convert to bytes
+    
     buffer = BytesIO()
     sf.write(buffer, y_eff, sr, format='WAV')
     buffer.seek(0)
     return buffer
 
 def plot_waveform(y, sr, title):
-    """Plot audio waveform"""
+    
     fig, ax = plt.subplots(figsize=(10, 3))
     librosa.display.waveshow(y, sr=sr, ax=ax)
     ax.set_title(title)
@@ -75,10 +75,10 @@ def plot_waveform(y, sr, title):
     st.pyplot(fig)
 
 def main():
-    st.title("🎛️ Professional Sound Effects")
+    st.title("  Sound Effects")
     st.markdown("Apply studio-quality effects to your audio files")
     
-    # File upload
+   
     uploaded_file = st.file_uploader(
         "Upload Audio (MP3/WAV, max 10MB)",
         type=["mp3", "wav"]
@@ -102,7 +102,7 @@ def main():
                 ["None", "Reverb", "Echo", "Pitch Shift", "Distortion", "Robot Voice"]
             )
             
-            # Effect-specific parameters
+            
             params = {}
             if effect == "Reverb":
                 params["wet_level"] = st.slider("Reverb Amount", 0.1, 0.9, 0.3)
