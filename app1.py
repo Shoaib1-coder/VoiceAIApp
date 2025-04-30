@@ -167,12 +167,12 @@ def show_login():
 
     if st.button("Login"):
       user = login_user(username, password)
-    if user:
+      if user:
             st.success("Login Successful!")
             st.session_state.logged_in = True
             st.session_state.page = "Home"
             st.rerun()  # Redirect to Home page
-     else:
+      else:
             st.error("Invalid username or password!")
 
 # ----------------- SIGN UP PAGE -----------------
