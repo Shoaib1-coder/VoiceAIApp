@@ -26,20 +26,20 @@ import time
     #)
     #return conn
 
-#def create_user(username, password):
-    #conn = get_connection()
-    #cursor = conn.cursor()
-    #cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (username, password))
-    #conn.commit()
-    #conn.close()
+def create_user(username, password):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (username, password))
+    conn.commit()
+    conn.close()
 
-#def login_user(username, password):
-    #conn = get_connection()
-    #cursor = conn.cursor()
-    #cursor.execute("SELECT * FROM users WHERE username=%s AND password=%s", (username, password))
-    #data = cursor.fetchone()
-    #conn.close()
-    #return data
+def login_user(username, password):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM users WHERE username=%s AND password=%s", (username, password))
+    data = cursor.fetchone()
+    conn.close()
+    return data
 
 # ----------------- SESSION SETUP -----------------
 if 'logged_in' not in st.session_state:
