@@ -58,6 +58,7 @@ selected = option_menu(
 )
 def show_llEleven():
      st.title("Welcome to My MY llElevenlab App") 
+     st.subheader(" GO to Home My Use Features)
      st.subheader(" In the ancient land of Eldoria, where the skies were painted with shades of mystic hues and the forests whispered secrets of old, there existed a dragon named Zephyros. Unlike the fearsome tales of dragons that plagued human hearts with terror, Zephyros was a creature of wonder and wisdom, revered by all who knew of his existence.")
      st.text("you can work with  AI chatbot and Text to speech and speech to text and voice cloning ,voice changer,AI Speech Classifier ")            
  
@@ -82,12 +83,12 @@ def show_llEleven():
         
      st.markdown("""
       <hr>
-      <center style="color: #aaa;">Made with ❤️ using Streamlit • © 2025 VoiceAI</center>
+      <center style="color: red;">Made with ❤ using Streamlit • © 2025 VoiceAI</center>
       """, unsafe_allow_html=True)   
 
 # ----------------- HOME PAGE -----------------
 def show_home():
-    st.title("🏠 Home Page")
+    
 
     # Sidebar for navigation between different pages
     st.sidebar.title("🎧 AI Voice Toolkit")
@@ -103,26 +104,26 @@ def show_home():
        
 
 # Load API key securely from Streamlit secrets
-       genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
+       genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 
 # Gemini prompt template
        GENERATION_PROMPT = "Convert the following text into a natural-sounding spoken version:"
 
-#st.set_page_config(page_title="🎤 Gemini TTS App", page_icon="🔊")
 
-       st.title("🎙️ Text to Speech using Gemini + gTTS")
+
+       st.title("🎙 Text to Speech using Gemini + gTTS")
        st.write("Enter some text and hear it spoken aloud with realistic speech generation.")
 
 # Text input
-       text_input = st.text_area("📝 Enter your text here:", height=200)
+       text_input = st.text_area(" Enter your text here:", height=200)
 
-       if st.button("🔊 Generate Speech", use_container_width=True):
+       if st.button(" Generate Speech", use_container_width=True):
          if text_input.strip() == "":
             st.warning("Please enter some text before generating speech.")
          else:
            with st.spinner("Generating speech with Gemini..."):
             try:
-                model = genai.GenerativeModel("gemini-pro")
+                model = genai.GenerativeModel("model_name="gemini-2.0-flash"")
                 response = model.generate_content(GENERATION_PROMPT + "\n\n" + text_input)
                 spoken_text = response.text.strip()
 
@@ -158,21 +159,21 @@ def show_home():
 
 
 # ----------------- LOGIN PAGE -----------------
-# def show_login():
-#     st.title("🔑 Login")
+ def show_login():
+     st.title(" Login")
 
-#     username = st.text_input("Username")
-#     password = st.text_input("Password", type="password")
+     username = st.text_input("Username")
+     password = st.text_input("Password", type="password")
 
-#     if st.button("Login"):
-#         user = #login_user(username, password)
-#         if user:
-#             st.success("Login Successful!")
-#             st.session_state.logged_in = True
-#             st.session_state.page = "Home"
-#             st.rerun()  # Redirect to Home page
-#         else:
-#             st.error("Invalid username or password!")
+     if st.button("Login"):
+         user = #login_user(username, password)
+         if user:
+             st.success("Login Successful!")
+             st.session_state.logged_in = True
+             st.session_state.page = "Home"
+             st.rerun()  # Redirect to Home page
+         else:
+             st.error("Invalid username or password!")
 
 # ----------------- SIGN UP PAGE -----------------
 def show_signup():
@@ -232,7 +233,7 @@ elif selected == "Home":
 
 elif selected == "Login":
     st.session_state.page = "Login"
-    #show_login()
+    show_login()
 
 elif selected == "Sign up":
     st.session_state.page = "Sign up"
