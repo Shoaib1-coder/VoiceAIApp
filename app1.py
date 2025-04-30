@@ -6,8 +6,6 @@ from langdetect import detect
 import google.generativeai as genai
 from io import BytesIO
 import speech_recognition as sr
-
-
 from pydub import AudioSegment
 import whisper
 import os
