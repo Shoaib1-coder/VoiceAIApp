@@ -1,5 +1,10 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
+from voice_changer import main as voice_changer_main
+from speech import speech_classifier_app
+from voice_isolator import main as voice_isolator_main
+from sound_effects import main as sound_effects_main
+from speech_to_text import main as speech_to_text
 import mysql.connector
 from gtts import gTTS
 from langdetect import detect
@@ -134,9 +139,9 @@ def show_home():
 
 
     elif selected_page == "Speech to Text":
-        st.subheader("Speech to Text Page")
+        speech_to_text()
     elif selected_page == "Voice Changer":
-        st.subheader("Voice Changer Page")
+       voice_changer_main()
     elif selected_page == "Sound Effects":
         sound_effects_main() 
     elif selected_page == "Voice Isolator":
