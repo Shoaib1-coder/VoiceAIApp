@@ -4,16 +4,6 @@ import mysql.connector
 from gtts import gTTS
 from langdetect import detect
 import google.generativeai as genai
-from io import BytesIO
-import speech_recognition as sr
-from pydub import AudioSegment
-import uuid
-from voice_changer import main as voice_changer_main
-from speech import speech_classifier_app
-from voice_isolator import main as voice_isolator_main
-from sound_effects import main as sound_effects_main
-from speech_to_text import main as speech_to_text_main
-
 import os
 import tempfile
 import time
@@ -103,84 +93,50 @@ def show_home():
 
     # Show content based on the selected page in the sidebar
     if selected_page == "Text to Speech":
-         st.title("🎤 AI Voice Generator (Multi-language)")
-         text = st.text_area("Enter text to convert to speech:")
-
-# Optional cleanup of previously stored file
-         if "temp_audio_file" in st.session_state:
-          try:
-              os.remove(st.session_state["temp_audio_file"])
-          except FileNotFoundError:
-              pass
-          del st.session_state["temp_audio_file"]
-
-         if st.button("🔊 Convert to Speech"):
-           if not text.strip():
-             st.warning("Please enter some text.")
-           else:
-               try:
-            # Detect language
-                  lang = detect(text)
-                  st.info(f"Detected Language: `{lang}`")
-
-            # Generate speech
-                  tts = gTTS(text=text, lang=lang)
-                  temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".mp3")
-                  tts.save(temp_file.name)
-
-            # Store filename to delete on next run
-                  st.session_state["temp_audio_file"] = temp_file.name
-
-            # Playback and download
-                  st.audio(temp_file.name, format="audio/mp3")
-                  with open(temp_file.name, "rb") as f:
-                   st.download_button("Download Audio", f, file_name="speech.mp3", mime="audio/mpeg")
-
-               except Exception as e:
-                     st.error(f"An error occurred: {e}")
-
-
-      
         
         
-   
+       
+
+# Load API key securely from Streamlit secrets
+       genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
+
+# Gemini prompt template
+       GENERATION_PROMPT = "Convert the following text into a natural-sounding spoken version:"
+
+#st.set_page_config(page_title="🎤 Gemini TTS App", page_icon="🔊")
+
+       st.title("🎙️ Text to Speech using Gemini + gTTS")
+       st.write("Enter some text and hear it spoken aloud with realistic speech generation.")
+
+# Text input
+       text_input = st.text_area("📝 Enter your text here:", height=200)
+
+       if st.button("🔊 Generate Speech", use_container_width=True):
+         if text_input.strip() == "":
+            st.warning("Please enter some text before generating speech.")
+         else:
+           with st.spinner("Generating speech with Gemini..."):
+            try:
+                model = genai.GenerativeModel("gemini-pro")
+                response = model.generate_content(GENERATION_PROMPT + "\n\n" + text_input)
+                spoken_text = response.text.strip()
+
+                # Convert to speech using gTTS
+                tts = gTTS(spoken_text)
+                temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".mp3")
+                tts.save(temp_file.name)
+
+                st.success("Speech generated successfully!")
+                st.audio(temp_file.name, format="audio/mp3")
+
+            except Exception as e:
+                st.error(f"Error: {e}")
 
 
     elif selected_page == "Speech to Text":
-        speech_to_text_main()
-       
-        
-        
-
-        
-        
-        
-        
-
-       
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+        st.subheader("Speech to Text Page")
     elif selected_page == "Voice Changer":
-        
-        
-        voice_changer_main()
-        
-
-
+        st.subheader("Voice Changer Page")
     elif selected_page == "Sound Effects":
         sound_effects_main() 
     elif selected_page == "Voice Isolator":
@@ -280,3 +236,6 @@ elif selected == "Sign up":
 elif selected == "Docu":
     st.session_state.page = "Documentation"
     show_documentation()
+
+
+
