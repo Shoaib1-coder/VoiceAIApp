@@ -102,13 +102,13 @@ def show_home():
     # Show content based on the selected page in the sidebar
     if selected_page == "AI Chatbot":
         from AIbot import main  
-         main()
+        main()
         
     elif selected_page == "Text to Speech":
         tts_main()
        
     elif selected_page == "Speech to Text":
-         speech_to_text()
+        speech_to_text()
       
         
     elif selected_page == "Voice Changer":
