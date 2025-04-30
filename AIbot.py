@@ -7,7 +7,7 @@ import tempfile
 import os
 
 def main():
-    st.set_page_config(page_title="Visual Chatbot", layout="centered")
+    st.title("Visual Chatbot")
     st.markdown("<h2 style='color: red;'>Author: <span style='font-size: 24px;'>Muhammad Shoaib</span></h2>", unsafe_allow_html=True)
     st.title("Visual Chatbot")
     st.markdown("Ask in **German**, **Arabic**, **Urdu**, or **English** by typing or uploading an audio file")
