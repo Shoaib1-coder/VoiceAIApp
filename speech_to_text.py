@@ -6,12 +6,7 @@ from io import BytesIO
 import tempfile
 import langdetect
 
-# Page Config
-st.set_page_config(
-    page_title="Universal Speech-to-Text Converter",
-    page_icon="🗣️",
-    layout="wide"
-)
+st.title("Speech to Text")
 
 # Custom CSS
 st.markdown("""
