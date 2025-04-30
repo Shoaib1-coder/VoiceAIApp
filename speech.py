@@ -42,7 +42,7 @@ def speech_classifier_app():
     
     # Get Gemini API key (from secrets or input)
     if 'gemini_api_key' in st.secrets:
-        gemini_api_key = st.secrets['gemini_api_key']
+        gemini_api_key = st.secrets['GEMINI_API_KEY']
     else:
         gemini_api_key = st.text_input("Enter Google Gemini API Key", type="password")
     
