@@ -5,7 +5,7 @@ from pydub import AudioSegment
 from io import BytesIO
 import tempfile
 
-# Configure Gemini
+
 def configure_gemini(api_key):
     genai.configure(api_key=api_key)
     return genai.GenerativeModel(model_name="gemini-2.0-flash")
@@ -33,15 +33,15 @@ def classify_speech(audio_file, gemini_api_key):
         if not wav_buffer:
             return None
             
-        # Save temporary WAV file (Gemini needs file path)
+        
         with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
             tmp.write(wav_buffer.read())
             tmp_path = tmp.name
         
-        # Initialize Gemini model
+        
         model = configure_gemini(gemini_api_key)
         
-        # Use Gemini to analyze speech
+       
         response = model.generate_content(
             "Analyze the emotion in this audio and respond with ONLY one word: "
             "'Happy', 'Sad', 'Angry', 'Neutral', 'Excited', or 'Fearful'. "
@@ -57,7 +57,7 @@ def classify_speech(audio_file, gemini_api_key):
         return None
 
 def speech_classifier_app():
-    st.title("🎙️ AI Speech Emotion Classifier")
+    st.title("🎙 AI Speech Emotion Classifier")
     st.markdown("Upload an audio file to detect emotional tone using Google Gemini")
     
     # Get Gemini API key from Streamlit secrets
@@ -79,17 +79,17 @@ def speech_classifier_app():
                 if emotion:
                     st.success("Analysis Complete!")
                     
-                    # Display result with emoji
+                   
                     emotion_map = {
-                        "Happy": "😊 Happy",
-                        "Sad": "😢 Sad", 
-                        "Angry": "😠 Angry",
-                        "Neutral": "😐 Neutral",
-                        "Excited": "🤩 Excited",
-                        "Fearful": "😨 Fearful"
+                        "Happy": " Happy",
+                        "Sad": " Sad", 
+                        "Angry": " Angry",
+                        "Neutral": " Neutral",
+                        "Excited": " Excited",
+                        "Fearful": " Fearful"
                     }
                     
-                    display_text = emotion_map.get(emotion, f"❓ {emotion}")
+                    display_text = emotion_map.get(emotion, f" {emotion}")
                     st.subheader(f"Detected Emotion: {display_text}")
 
 if __name__ == "__main__":
