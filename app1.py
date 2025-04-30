@@ -124,7 +124,7 @@ def show_home():
         
     elif selected_page == "Voice Isolator":
         voice_isolator_main()
-     elif selected_page == "AI Speech Classifier":
+    elif selected_page == "AI Speech Classifier":
         speech_classifier_app() 
         
 
