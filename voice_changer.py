@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from scipy import signal
 
 def voice_changer_app():
-    """Main function for the voice changer app with gender selection"""
+    
     st.markdown("""
     <style>
         .stAudio {
@@ -22,7 +22,7 @@ def voice_changer_app():
     </style>
     """, unsafe_allow_html=True)
     
-    st.title("🎤 Advanced Voice Changer")
+    st.title(" Voice Changer")
     st.markdown("Upload audio and modify voice characteristics in real-time")
 
     # Supported effects with gender modification
@@ -39,7 +39,7 @@ def voice_changer_app():
         "Underwater": lambda x, sr, gender: (signal.lfilter([1], [1, -0.97], x), sr)
     }
 
-    # File upload and settings
+    
     uploaded_file = st.file_uploader(
         "Upload Audio (MP3/WAV)",
         type=["mp3", "wav"]
@@ -63,21 +63,21 @@ def voice_changer_app():
     if uploaded_file and st.button("Apply Voice Change", type="primary"):
         with st.spinner("Processing audio..."):
             try:
-                # Load audio
+              
                 y, sr = librosa.load(uploaded_file, sr=None)
                 
-                # Apply selected effect with gender modification
+               
                 y_processed, sr = EFFECTS[effect_name](y, sr, gender)
                 
-                # Normalize audio
+               
                 y_processed = librosa.util.normalize(y_processed)
                 
-                # Convert to bytes for playback
+                
                 buffer = BytesIO()
                 sf.write(buffer, y_processed, sr, format='WAV')
                 buffer.seek(0)
                 
-                # Display results
+                
                 col1, col2 = st.columns(2)
                 
                 with col1:
@@ -88,7 +88,7 @@ def voice_changer_app():
                     st.subheader("Modified Voice")
                     st.audio(buffer)
                     
-                    # Download button
+                  
                     st.download_button(
                         "Download Modified Audio",
                         data=buffer,
@@ -96,7 +96,7 @@ def voice_changer_app():
                         mime="audio/wav"
                     )
                     
-                # Waveform visualization
+                n
                 st.subheader("Waveform Comparison")
                 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 6))
                 
