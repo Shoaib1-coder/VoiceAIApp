@@ -2,6 +2,7 @@ import streamlit as st
 import google.generativeai as genai
 import os
 from pydub import AudioSegment
+from io import BytesIO
 import tempfile
 
 # Configure Gemini
@@ -9,13 +10,32 @@ def configure_gemini(api_key):
     genai.configure(api_key=api_key)
     return genai.GenerativeModel('gemini-pro')
 
-# Classify speech from audio file
+def convert_audio(audio_file):
+    """Convert audio to WAV format in memory"""
+    try:
+        # Read audio file
+        audio = AudioSegment.from_file(BytesIO(audio_file.read()))
+        
+        # Export to WAV in memory
+        wav_buffer = BytesIO()
+        audio.export(wav_buffer, format="wav")
+        wav_buffer.seek(0)
+        return wav_buffer
+        
+    except Exception as e:
+        st.error(f"Audio conversion error: {str(e)}")
+        return None
+
 def classify_speech(audio_file, gemini_api_key):
     try:
         # Convert audio to WAV format
+        wav_buffer = convert_audio(audio_file)
+        if not wav_buffer:
+            return None
+            
+        # Save temporary WAV file (Gemini needs file path)
         with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
-            audio = AudioSegment.from_file(audio_file)
-            audio.export(tmp.name, format="wav")
+            tmp.write(wav_buffer.read())
             tmp_path = tmp.name
         
         # Initialize Gemini model
@@ -23,9 +43,9 @@ def classify_speech(audio_file, gemini_api_key):
         
         # Use Gemini to analyze speech
         response = model.generate_content(
-            f"Analyze the emotion in this audio file and classify it as only one of these: "
-            f"'Happy', 'Sad', 'Angry', 'Neutral', 'Excited', 'Fearful'. "
-            f"Respond with just the emotion word. Audio file path: {tmp_path}"
+            "Analyze the emotion in this audio and respond with ONLY one word: "
+            "'Happy', 'Sad', 'Angry', 'Neutral', 'Excited', or 'Fearful'. "
+            f"Audio file: {tmp_path}"
         )
         
         # Clean up
@@ -33,10 +53,9 @@ def classify_speech(audio_file, gemini_api_key):
         return response.text.strip()
     
     except Exception as e:
-        st.error(f"Error during classification: {str(e)}")
+        st.error(f"Classification error: {str(e)}")
         return None
 
-# Main app function
 def speech_classifier_app():
     st.title("🎙️ AI Speech Emotion Classifier")
     st.markdown("Upload an audio file to detect emotional tone using Google Gemini")
@@ -73,8 +92,5 @@ def speech_classifier_app():
                     display_text = emotion_map.get(emotion, f"❓ {emotion}")
                     st.subheader(f"Detected Emotion: {display_text}")
 
-def main():
-    speech_classifier_app()
-
 if __name__ == "__main__":
-    main()
+    speech_classifier_app()
