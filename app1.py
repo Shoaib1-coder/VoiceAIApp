@@ -103,12 +103,6 @@ def show_home():
     if selected_page == "AI Chatbot":
         
         
-        
-       
-
-
-
-
     elif selected_page == "Text to Speech":
         tts_main()
        
