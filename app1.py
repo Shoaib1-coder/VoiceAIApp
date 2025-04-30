@@ -169,11 +169,11 @@ def show_login():
       user = login_user(username, password)
     if user:
             st.success("Login Successful!")
-             st.session_state.logged_in = True
-             st.session_state.page = "Home"
-             st.rerun()  # Redirect to Home page
+            st.session_state.logged_in = True
+            st.session_state.page = "Home"
+            st.rerun()  # Redirect to Home page
      else:
-             st.error("Invalid username or password!")
+            st.error("Invalid username or password!")
 
 # ----------------- SIGN UP PAGE -----------------
 def show_signup():
