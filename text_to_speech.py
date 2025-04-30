@@ -72,7 +72,7 @@ def text_to_speech(text, language, engine='auto'):
         return None, None
 
 def main():
-    st.title("🔊 Text-to-Speech Converter")
+    st.title(" Text-to-Speech Converter")
     st.markdown("Convert text to speech with automatic language detection")
     
     # Text input
