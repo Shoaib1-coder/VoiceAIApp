@@ -5,14 +5,9 @@ import soundfile as sf
 from io import BytesIO
 import noisereduce as nr
 
-# Page Config
-st.set_page_config(
-    page_title="Voice Isolator",
-    page_icon="🔊",
-    layout="wide"
-)
 
-# Custom CSS for Streamlit Cloud
+
+
 st.markdown("""
 <style>
     .stAudio {
@@ -33,14 +28,14 @@ def isolate_voice(audio_bytes, progress_bar):
     try:
         progress_bar.progress(10)
         
-        # Load audio directly from bytes
+       
         y, sr = librosa.load(BytesIO(audio_bytes), sr=None)
         
-        # Step 1: Harmonic-Percussive Separation
+        
         progress_bar.progress(30)
         y_harmonic, _ = librosa.effects.hpss(y)
         
-        # Step 2: Noise reduction
+        
         progress_bar.progress(60)
         y_clean = nr.reduce_noise(
             y=y_harmonic,
@@ -69,7 +64,7 @@ def isolate_voice(audio_bytes, progress_bar):
         return None
 
 def main():
-    st.title("🔊 Cloud Voice Isolator")
+    st.title("  Voice Isolator")
     st.markdown("""
     Upload audio to extract clean vocals (works on Streamlit Cloud)
     """)
@@ -88,7 +83,7 @@ def main():
             st.audio(uploaded_file)
             
         with col2:
-            if st.button("✨ Isolate Vocals", type="primary"):
+            if st.button(" Isolate Vocals", type="primary"):
                 with st.spinner("Processing..."):
                     progress_bar = st.progress(0)
                     audio_bytes = uploaded_file.read()
@@ -99,7 +94,7 @@ def main():
                         st.audio(isolated)
                         
                         st.download_button(
-                            "⬇️ Download Clean Vocals",
+                            "⬇ Download Clean Vocals",
                             data=isolated,
                             file_name="isolated_vocals.wav",
                             mime="audio/wav",
