@@ -1,14 +1,11 @@
 streamlit
 streamlit-option-menu
-mysql-connector-python
-gTTS
-langdetect
-google-generativeai
-pydub
-whisper
-torch
-pyaudio
-wave
 SpeechRecognition
+pydub
+langdetect
+gTTS
 ffmpeg-python
+google-generativeai
+mysql-connector-python
+
 
