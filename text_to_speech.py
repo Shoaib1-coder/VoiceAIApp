@@ -2,7 +2,7 @@ import streamlit as st
 from gtts import gTTS
 from io import BytesIO
 
-st.title(" Text-to-Speech Converter ")
+
 
 # Supported Languages
 LANGUAGES = {
@@ -26,7 +26,7 @@ def text_to_speech(text, lang_code):
         return None
 
 def main():
-    st.markdown("Convert text to speech ")
+    st.title(" Text-to-Speech Converter ")
 
     # Text input
     text = st.text_area("Enter your text here:", height=150)
