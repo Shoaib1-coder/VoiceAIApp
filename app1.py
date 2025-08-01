@@ -14,19 +14,19 @@ import time
 # ----------------- NAVIGATION -----------------
 selected = option_menu(
     menu_title=None,
-    options=["llEleven", "Home", "Docu"],
+    options=["Home", "Tools", "Documentation"],
     menu_icon="cast",
     default_index=0,
     orientation="horizontal",
 )
 
 # ----------------- llEleven PAGE -----------------
-def show_llEleven():
-    st.title("Welcome to My VoiceAI Lab – Multifeatured AI Voice Toolkit") 
+def show_home():
+    st.title("Welcome to My VoiceAI Lab ") 
     st.subheader(" GO to Home Page and go to Sidebar My Use Features")
     st.subheader("In the ancient land of Eldoria, where the skies were painted with shades of mystic hues...")
 
-    st.text("You can work with AI chatbot, Text to Speech, Speech to Text, Voice Cloning, Voice Changer, AI Speech Classifier")            
+    st.text("You can work with Text to Speech, Speech to Text, Voice Cloning, Voice Changer)            
 
     st.markdown("""
         <h1 style='font-size: 3.2em; color: #4A90E2;'> Create the Most <span style='color:#FF4B4B;'>Realistic Speech</span></h1>
@@ -42,7 +42,7 @@ def show_llEleven():
     """, unsafe_allow_html=True)
 
 # ----------------- HOME PAGE -----------------
-def show_home():
+def show_tools():
     st.sidebar.title("AI Voice Toolkit")
     selected_page = st.sidebar.radio(
         "Navigate",
@@ -78,11 +78,11 @@ def show_documentation():
     """)
 
 # ----------------- PAGE ROUTING -----------------
-if selected == "llEleven":
-    show_llEleven()
-elif selected == "Home":
+if selected == "Home":
     show_home()
-elif selected == "Docu":
+elif selected == "Tools":
+    show_tools()
+elif selected == "Documentation":
     show_documentation()
 
 
