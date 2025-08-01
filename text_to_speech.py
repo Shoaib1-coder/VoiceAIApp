@@ -2,7 +2,7 @@ import streamlit as st
 from gtts import gTTS
 from io import BytesIO
 
-st.title("🌐 Text-to-Speech Converter (Manual Language Selection)")
+st.title(" Text-to-Speech Converter ")
 
 # Supported Languages
 LANGUAGES = {
@@ -33,23 +33,23 @@ def main():
 
     # Language selection
     selected_lang = st.selectbox(
-        "🔽 Select a language:",
+        " Select a language:",
         options=list(LANGUAGES.keys()),
         format_func=lambda x: LANGUAGES[x]
     )
 
     # Button to convert
-    if st.button("🔊 Speech Convert"):
+    if st.button(" Speech Convert"):
         if text.strip() == "":
             st.warning("Please enter some text before converting.")
         else:
             with st.spinner("Generating speech..."):
                 audio = text_to_speech(text, selected_lang)
                 if audio:
-                    st.success("✅ Speech successfully generated.")
+                    st.success(" Speech successfully generated.")
                     st.audio(audio, format="audio/mp3")
                     st.download_button(
-                        "⬇️ Download Audio",
+                        " Download Audio",
                         data=audio,
                         file_name=f"speech_{selected_lang}.mp3",
                         mime="audio/mp3"
