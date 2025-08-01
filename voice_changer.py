@@ -1,4 +1,3 @@
-
 import streamlit as st
 import numpy as np
 import librosa
@@ -8,7 +7,7 @@ import matplotlib.pyplot as plt
 from scipy import signal
 
 def voice_changer_app():
-    
+    #  Custom UI styling for audio player and buttons
     st.markdown("""
     <style>
         .stAudio {
@@ -22,10 +21,10 @@ def voice_changer_app():
     </style>
     """, unsafe_allow_html=True)
     
-    st.title(" Voice Changer")
+    st.title("Voice Changer")
     st.markdown("Upload audio and modify voice characteristics in real-time")
 
-    # Supported effects with gender modification
+    #  Dictionary of voice effects (functions that alter audio signal)
     EFFECTS = {
         "Normal": lambda x, sr, gender: (x, sr),
         "Pitch Up": lambda x, sr, gender: (librosa.effects.pitch_shift(x, sr=sr, n_steps=4 if gender == "female" else 2), sr),
@@ -39,81 +38,68 @@ def voice_changer_app():
         "Underwater": lambda x, sr, gender: (signal.lfilter([1], [1, -0.97], x), sr)
     }
 
-    
-    uploaded_file = st.file_uploader(
-        "Upload Audio (MP3/WAV)",
-        type=["mp3", "wav"]
-    )
-    
+    #  Upload audio file (MP3/WAV)
+    uploaded_file = st.file_uploader("Upload Audio (MP3/WAV)", type=["mp3", "wav"])
+
+    #  Select effect and gender
     col1, col2 = st.columns(2)
-    
     with col1:
-        effect_name = st.selectbox(
-            "Voice Effect",
-            list(EFFECTS.keys())
-        )
-        
+        effect_name = st.selectbox("Voice Effect", list(EFFECTS.keys()))
     with col2:
-        gender = st.radio(
-            "Target Gender",
-            ["male", "female"],
-            horizontal=True
-        )
-    
+        gender = st.radio("Target Gender", ["male", "female"], horizontal=True)
+
+    # Apply effect after clicking the button
     if uploaded_file and st.button("Apply Voice Change", type="primary"):
         with st.spinner("Processing audio..."):
             try:
-              
+                #  Load uploaded audio
                 y, sr = librosa.load(uploaded_file, sr=None)
-                
-               
+
+                #  Apply selected voice effect
                 y_processed, sr = EFFECTS[effect_name](y, sr, gender)
-                
-               
+
+                #  Normalize volume of output
                 y_processed = librosa.util.normalize(y_processed)
-                
-                
+
+                #  Convert to WAV in memory buffer
                 buffer = BytesIO()
                 sf.write(buffer, y_processed, sr, format='WAV')
                 buffer.seek(0)
-                
-                
+
+                #  Display original and processed audio side by side
                 col1, col2 = st.columns(2)
-                
                 with col1:
                     st.subheader("Original Voice")
                     st.audio(uploaded_file)
-                    
                 with col2:
                     st.subheader("Modified Voice")
                     st.audio(buffer)
-                    
-                  
+
+                    # ⬇ Download processed audio
                     st.download_button(
                         "Download Modified Audio",
                         data=buffer,
                         file_name=f"{gender}_{effect_name.lower().replace(' ', '_')}.wav",
                         mime="audio/wav"
                     )
-                    
-                n
+
+                #  Show waveform of both original and modified audio
                 st.subheader("Waveform Comparison")
                 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 6))
-                
                 librosa.display.waveshow(y, sr=sr, ax=ax1, color='blue')
                 ax1.set_title("Original Voice")
-                
                 librosa.display.waveshow(y_processed, sr=sr, ax=ax2, color='red')
                 ax2.set_title("Modified Voice")
-                
                 plt.tight_layout()
                 st.pyplot(fig)
-                
+
             except Exception as e:
                 st.error(f"Error processing audio: {str(e)}")
 
+# Run app
 def main():
     voice_changer_app()
 
 if __name__ == "__main__":
     main()
+
