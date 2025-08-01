@@ -22,8 +22,8 @@ selected = option_menu(
 
 # ----------------- llEleven PAGE -----------------
 def show_llEleven():
-    st.title("Welcome to My llElevenlab App") 
-    st.subheader(" GO to Home My Use Features")
+    st.title("Welcome to My VoiceAI Lab – Multifeatured AI Voice Toolkit") 
+    st.subheader(" GO to Home Page and go to Sidebar My Use Features")
     st.subheader("In the ancient land of Eldoria, where the skies were painted with shades of mystic hues...")
 
     st.text("You can work with AI chatbot, Text to Speech, Speech to Text, Voice Cloning, Voice Changer, AI Speech Classifier")            
@@ -72,7 +72,7 @@ def show_documentation():
     - **Voice Changer**: Modify your voice pitch and tone.
     - **Sound Effects**: Add background sound effects to your recordings.
     - **Voice Isolator**: Remove noise and isolate voice clearly.
-    - **AI Speech Classifier**: Analyze and classify types of speech.
+   
 
     > Just open the app and explore the tools directly!
     """)
