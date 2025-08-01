@@ -6,7 +6,7 @@ from io import BytesIO
 import matplotlib.pyplot as plt
 
 
-st.subheader("Sound Effects Page")
+st.subheader("Sound Effects ")
 
 
 st.markdown("""
