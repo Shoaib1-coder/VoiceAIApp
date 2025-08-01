@@ -38,8 +38,9 @@ def voice_changer_app():
         "Underwater": lambda x, sr, gender: (signal.lfilter([1], [1, -0.97], x), sr)
     }
 
-    #  Upload audio file (MP3/WAV)
-    uploaded_file = st.file_uploader("Upload Audio (MP3/WAV)", type=["mp3", "wav"])
+    #  Upload audio file 
+    uploaded_file = st.file_uploader("Upload Audio (MP3 WAV OGG M4A FLAC)", type=["mp3", "wav","ogg","m4a","flac"])
+
 
     #  Select effect and gender
     col1, col2 = st.columns(2)
