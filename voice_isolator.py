@@ -67,8 +67,8 @@ def main():
 
     #  Upload audio file (MP3/WAV)
     uploaded_file = st.file_uploader(
-        "Upload MP3/WAV (max 10MB)", 
-        type=["mp3", "wav"],
+        "Upload MP3, WAV, OGG, M4A, FLAC (max 10MB)", 
+        type=["mp3", "wav","ogg","m4a","flac"],
         accept_multiple_files=False
     )
 
