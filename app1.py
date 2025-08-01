@@ -26,7 +26,7 @@ def show_home():
     st.subheader(" GO to Home Page and go to Sidebar My Use Features")
     st.subheader("In the ancient land of Eldoria, where the skies were painted with shades of mystic hues...")
 
-    st.text("You can work with Text to Speech, Speech to Text, Voice Cloning, Voice Changer)            
+    st.text("You can work with Text to Speech, Speech to Text, Voice Cloning, Voice Changer")            
 
     st.markdown("""
         <h1 style='font-size: 3.2em; color: #4A90E2;'> Create the Most <span style='color:#FF4B4B;'>Realistic Speech</span></h1>
