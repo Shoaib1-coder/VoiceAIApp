@@ -1,14 +1,12 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
 from voice_changer import main as voice_changer_main
-from speech import speech_classifier_app
 from voice_isolator import main as voice_isolator_main
 from sound_effects import main as sound_effects_main
 from speech_to_text import main as speech_to_text
 from text_to_speech import main as tts_main
 from gtts import gTTS
 from langdetect import detect
-import google.generativeai as genai
 import os
 import tempfile
 import time
@@ -48,13 +46,12 @@ def show_home():
     st.sidebar.title("AI Voice Toolkit")
     selected_page = st.sidebar.radio(
         "Navigate",
-        ["AI Chatbot", "Text to Speech", "Speech to Text", "Voice Changer", "Sound Effects", "Voice Isolator", "AI Speech Classifier"]
+        [ "Text to Speech", "Speech to Text", "Voice Changer", "Sound Effects", "Voice Isolator"]
     )
 
-    if selected_page == "AI Chatbot":
-        from AIbot import main  
-        main()
-    elif selected_page == "Text to Speech":
+    
+       
+    if selected_page == "Text to Speech":
         tts_main()
     elif selected_page == "Speech to Text":
         speech_to_text()
@@ -64,8 +61,7 @@ def show_home():
         sound_effects_main()
     elif selected_page == "Voice Isolator":
         voice_isolator_main()
-    elif selected_page == "AI Speech Classifier":
-        speech_classifier_app()
+ 
 
 # ----------------- DOCUMENTATION PAGE -----------------
 def show_documentation():
