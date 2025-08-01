@@ -1,44 +1,46 @@
 import streamlit as st
-from gtts import gTTS
-from io import BytesIO
+from gtts import gTTS              # Google Text-to-Speech
+from io import BytesIO             # For handling in-memory audio file
 
-
-
-# Supported Languages
+# Supported Languages Dictionary
 LANGUAGES = {
     'en': 'English',
     'ar': 'Arabic',
     'ur': 'Urdu',
     'de': 'German',
     'fr': 'French',
-    'es': 'Spanish'
+    'es': 'Spanish',
+    'hi': 'Hindi',               
+    'zh-cn': 'Chinese'           
 }
 
+# Function to convert text to speech
 def text_to_speech(text, lang_code):
     try:
-        tts = gTTS(text=text, lang=lang_code)
-        audio_buffer = BytesIO()
-        tts.write_to_fp(audio_buffer)
-        audio_buffer.seek(0)
+        tts = gTTS(text=text, lang=lang_code)      # Create speech object
+        audio_buffer = BytesIO()                   # Create in-memory audio buffer
+        tts.write_to_fp(audio_buffer)              # Write audio to buffer
+        audio_buffer.seek(0)                       # Reset pointer to start
         return audio_buffer
     except Exception as e:
         st.error(f"Error generating speech: {str(e)}")
         return None
 
+# Streamlit app UI
 def main():
-    st.title(" Text-to-Speech Converter ")
+    st.title(" Text-to-Speech Converter ")         # App title
 
-    # Text input
+    # Text input field
     text = st.text_area("Enter your text here:", height=150)
 
-    # Language selection
+    # Language dropdown menu
     selected_lang = st.selectbox(
         " Select a language:",
-        options=list(LANGUAGES.keys()),
-        format_func=lambda x: LANGUAGES[x]
+        options=list(LANGUAGES.keys()),            # List of language codes
+        format_func=lambda x: LANGUAGES[x]         # Show full language name
     )
 
-    # Button to convert
+    # Convert text to speech when button clicked
     if st.button(" Speech Convert"):
         if text.strip() == "":
             st.warning("Please enter some text before converting.")
@@ -47,7 +49,11 @@ def main():
                 audio = text_to_speech(text, selected_lang)
                 if audio:
                     st.success(" Speech successfully generated.")
+
+                    # Play audio in app
                     st.audio(audio, format="audio/mp3")
+
+                    # Download button for saving audio
                     st.download_button(
                         " Download Audio",
                         data=audio,
@@ -55,6 +61,8 @@ def main():
                         mime="audio/mp3"
                     )
 
+# Run the app
 if __name__ == "__main__":
     main()
+
 
