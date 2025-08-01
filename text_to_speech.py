@@ -26,7 +26,7 @@ def text_to_speech(text, lang_code):
         return None
 
 def main():
-    st.markdown("Convert text to speech using Google Text-to-Speech (gTTS).")
+    st.markdown("Convert text to speech ")
 
     # Text input
     text = st.text_area("Enter your text here:", height=150)
