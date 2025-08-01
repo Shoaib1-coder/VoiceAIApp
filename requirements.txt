@@ -5,8 +5,6 @@ pydub
 langdetect
 gTTS
 pyttsx3
-google-generativeai
-mysql-connector-python
 numpy
 librosa
 soundfile
