@@ -1,15 +1,24 @@
-streamlit
-streamlit-option-menu
-SpeechRecognition
-pydub
-langdetect
-gTTS
-pyttsx3
-numpy
-librosa
-soundfile
-matplotlib
-noisereduce
+streamlit               #  Main framework for building web apps in Python
+streamlit-option-menu   #  For creating customizable sidebar or navbar menus in Streamlit
+
+SpeechRecognition       #  Converts speech (from microphone/audio) into text using various engines (like Google Speech API)
+
+pydub                   #  Simplifies audio manipulation (convert, split, merge, change format), depends on ffmpeg
+
+langdetect              #  Detects the language of a given text (e.g., English, Urdu, Arabic)
+
+gTTS                    #  Google Text-to-Speech: converts text into speech audio (mp3)
+
+numpy                   #  Core library for numerical operations (used in signal processing)
+
+librosa                 #  Advanced music and audio processing (e.g., pitch shifting, waveform, time stretch)
+
+soundfile               # Reads and writes audio files (WAV/FLAC) using high-quality libraries
+
+matplotlib              # Used for plotting waveforms, spectrograms, and other visualizations
+
+noisereduce             #  Reduces background noise from audio (uses spectral gating and numpy)
+
 
 
 
