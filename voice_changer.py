@@ -2,12 +2,23 @@ import streamlit as st
 import numpy as np
 import librosa
 import soundfile as sf
-from io import BytesIO
 import matplotlib.pyplot as plt
+from io import BytesIO
 from scipy import signal
+from pydub import AudioSegment
+
+def load_audio(uploaded_file):
+    # Read file and convert to mono numpy array using pydub
+    file_bytes = uploaded_file.read()
+    audio = AudioSegment.from_file(BytesIO(file_bytes))
+    audio = audio.set_channels(1)
+    samples = np.array(audio.get_array_of_samples()).astype(np.float32)
+    samples /= np.iinfo(audio.sample_width * 8).max  # Normalize to [-1, 1]
+    sr = audio.frame_rate
+    return samples, sr
 
 def voice_changer_app():
-    #  Custom UI styling for audio player and buttons
+    # Custom styling
     st.markdown("""
     <style>
         .stAudio {
@@ -20,17 +31,17 @@ def voice_changer_app():
         }
     </style>
     """, unsafe_allow_html=True)
-    
-    st.title("Voice Changer")
+
+    st.title("🎙️ Voice Changer")
     st.markdown("Upload audio and modify voice characteristics in real-time")
 
-    #  Dictionary of voice effects (functions that alter audio signal)
+    # Voice effects
     EFFECTS = {
         "Normal": lambda x, sr, gender: (x, sr),
         "Pitch Up": lambda x, sr, gender: (librosa.effects.pitch_shift(x, sr=sr, n_steps=4 if gender == "female" else 2), sr),
         "Pitch Down": lambda x, sr, gender: (librosa.effects.pitch_shift(x, sr=sr, n_steps=-4 if gender == "male" else -2), sr),
         "Robot Voice": lambda x, sr, gender: (signal.lfilter([0.5, 0.5], [1], x), sr),
-        "Echo": lambda x, sr, gender: (x + 0.3 * np.roll(x, sr//3), sr),
+        "Echo": lambda x, sr, gender: (x + 0.3 * np.roll(x, sr // 3), sr),
         "Whisper": lambda x, sr, gender: (x * np.random.uniform(0.2, 0.5, len(x)), sr),
         "Slow Motion": lambda x, sr, gender: (librosa.effects.time_stretch(x, rate=0.7), sr),
         "Fast Forward": lambda x, sr, gender: (librosa.effects.time_stretch(x, rate=1.5), sr),
@@ -38,36 +49,30 @@ def voice_changer_app():
         "Underwater": lambda x, sr, gender: (signal.lfilter([1], [1, -0.97], x), sr)
     }
 
-    #  Upload audio file 
-    uploaded_file = st.file_uploader("Upload Audio (MP3 WAV OGG M4A FLAC)", type=["mp3", "wav","ogg","m4a","flac"])
+    # Upload audio
+    uploaded_file = st.file_uploader("Upload Audio (MP3, WAV, OGG, M4A, FLAC)", type=["mp3", "wav", "ogg", "m4a", "flac"])
 
-
-    #  Select effect and gender
+    # Select effect and gender
     col1, col2 = st.columns(2)
     with col1:
         effect_name = st.selectbox("Voice Effect", list(EFFECTS.keys()))
     with col2:
         gender = st.radio("Target Gender", ["male", "female"], horizontal=True)
 
-    # Apply effect after clicking the button
     if uploaded_file and st.button("Apply Voice Change", type="primary"):
         with st.spinner("Processing audio..."):
             try:
-                #  Load uploaded audio
-                y, sr = librosa.load(uploaded_file, sr=None)
-
-                #  Apply selected voice effect
+                # Load and process audio
+                y, sr = load_audio(uploaded_file)
                 y_processed, sr = EFFECTS[effect_name](y, sr, gender)
-
-                #  Normalize volume of output
                 y_processed = librosa.util.normalize(y_processed)
 
-                #  Convert to WAV in memory buffer
+                # Save processed audio to buffer
                 buffer = BytesIO()
                 sf.write(buffer, y_processed, sr, format='WAV')
                 buffer.seek(0)
 
-                #  Display original and processed audio side by side
+                # Playback & download
                 col1, col2 = st.columns(2)
                 with col1:
                     st.subheader("Original Voice")
@@ -76,7 +81,6 @@ def voice_changer_app():
                     st.subheader("Modified Voice")
                     st.audio(buffer)
 
-                    # ⬇ Download processed audio
                     st.download_button(
                         "Download Modified Audio",
                         data=buffer,
@@ -84,7 +88,7 @@ def voice_changer_app():
                         mime="audio/wav"
                     )
 
-                #  Show waveform of both original and modified audio
+                # Plot waveform
                 st.subheader("Waveform Comparison")
                 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 6))
                 librosa.display.waveshow(y, sr=sr, ax=ax1, color='blue')
@@ -97,10 +101,9 @@ def voice_changer_app():
             except Exception as e:
                 st.error(f"Error processing audio: {str(e)}")
 
-# Run app
+# Main runner
 def main():
     voice_changer_app()
 
 if __name__ == "__main__":
     main()
-
