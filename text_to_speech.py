@@ -1,127 +1,60 @@
 import streamlit as st
-import pyttsx3  # Offline TTS
-import gtts  # Online TTS (Google)
+from gtts import gTTS
 from io import BytesIO
-import langdetect
-from pydub import AudioSegment
-from pydub.playback import play
-import tempfile
-import os
 
-st.title("Text-to-Speech Converter")
+st.title("🌐 Text-to-Speech Converter (Manual Language Selection)")
 
 # Supported Languages
 LANGUAGES = {
-    'en': {'name': 'English', 'engine': 'both'},
-    'ar': {'name': 'Arabic', 'engine': 'google'},
-    'ur': {'name': 'Urdu', 'engine': 'google'}, 
-    'de': {'name': 'German', 'engine': 'both'},
-    'fr': {'name': 'French', 'engine': 'both'},
-    'es': {'name': 'Spanish', 'engine': 'both'}
+    'en': 'English',
+    'ar': 'Arabic',
+    'ur': 'Urdu',
+    'de': 'German',
+    'fr': 'French',
+    'es': 'Spanish'
 }
 
-def detect_language(text):
-    """Detect language from text"""
+def text_to_speech(text, lang_code):
     try:
-        lang = langdetect.detect(text)
-        return lang if lang in LANGUAGES else 'en'
-    except:
-        return 'en'
-
-def text_to_speech(text, language, engine='auto'):
-    """Convert text to speech audio"""
-    lang_code = language if len(language) == 2 else 'en'
-    
-    try:
-        if engine == 'google' or (engine == 'auto' and LANGUAGES[lang_code]['engine'] != 'pyttsx3'):
-            # Use Google TTS
-            tts = gtts.gTTS(text, lang=lang_code)
-            audio_buffer = BytesIO()
-            tts.write_to_fp(audio_buffer)
-            audio_buffer.seek(0)
-            return audio_buffer, 'google'
-        else:
-            # Use pyttsx3 (offline)
-            engine = pyttsx3.init()
-            voices = engine.getProperty('voices')
-            
-            # Try to set voice for the language
-            for voice in voices:
-                if language in voice.languages[0].lower():
-                    engine.setProperty('voice', voice.id)
-                    break
-            
-            # Save to temp file
-            with tempfile.NamedTemporaryFile(suffix='.wav', delete=False) as tmp:
-                tmp_path = tmp.name
-            
-            engine.save_to_file(text, tmp_path)
-            engine.runAndWait()
-            
-            # Convert to BytesIO
-            audio = AudioSegment.from_wav(tmp_path)
-            audio_buffer = BytesIO()
-            audio.export(audio_buffer, format='wav')
-            audio_buffer.seek(0)
-            
-            os.unlink(tmp_path)
-            return audio_buffer, 'pyttsx3'
-            
+        tts = gTTS(text=text, lang=lang_code)
+        audio_buffer = BytesIO()
+        tts.write_to_fp(audio_buffer)
+        audio_buffer.seek(0)
+        return audio_buffer
     except Exception as e:
-        st.error(f"TTS Error: {str(e)}")
-        return None, None
+        st.error(f"Error generating speech: {str(e)}")
+        return None
 
 def main():
-    st.title(" Text-to-Speech Converter")
-    st.markdown("Convert text to speech with automatic language detection")
-    
+    st.markdown("Convert text to speech using Google Text-to-Speech (gTTS).")
+
     # Text input
-    text = st.text_area("Enter text to convert to speech:", height=150)
-    
-    if text:
-        # Language detection
-        detected_lang = detect_language(text)
-        lang_name = LANGUAGES.get(detected_lang, {}).get('name', 'English')
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.info(f"Detected Language: **{lang_name}**")
-            
-            # Language override
-            selected_lang = st.selectbox(
-                "Or select language:",
-                options=list(LANGUAGES.keys()),
-                format_func=lambda x: LANGUAGES[x]['name'],
-                index=list(LANGUAGES.keys()).index(detected_lang)
-            )
-        
-        with col2:
-            engine = st.radio(
-                "TTS Engine:",
-                ["Auto", "Google", "Offline"],
-                horizontal=True
-            )
-            
-            if st.button("Generate Speech", type="primary"):
-                with st.spinner("Generating audio..."):
-                    audio_buffer, used_engine = text_to_speech(
-                        text,
-                        selected_lang,
-                        engine.lower() if engine != "Auto" else "auto"
+    text = st.text_area("Enter your text here:", height=150)
+
+    # Language selection
+    selected_lang = st.selectbox(
+        "🔽 Select a language:",
+        options=list(LANGUAGES.keys()),
+        format_func=lambda x: LANGUAGES[x]
+    )
+
+    # Button to convert
+    if st.button("🔊 Speech Convert"):
+        if text.strip() == "":
+            st.warning("Please enter some text before converting.")
+        else:
+            with st.spinner("Generating speech..."):
+                audio = text_to_speech(text, selected_lang)
+                if audio:
+                    st.success("✅ Speech successfully generated.")
+                    st.audio(audio, format="audio/mp3")
+                    st.download_button(
+                        "⬇️ Download Audio",
+                        data=audio,
+                        file_name=f"speech_{selected_lang}.mp3",
+                        mime="audio/mp3"
                     )
-                    
-                    if audio_buffer:
-                        st.success(f"Generated using {used_engine} engine")
-                        st.audio(audio_buffer)
-                        
-                        # Download option
-                        st.download_button(
-                            "Download Audio",
-                            data=audio_buffer,
-                            file_name=f"tts_{selected_lang}.wav",
-                            mime="audio/wav"
-                        )
 
 if __name__ == "__main__":
     main()
+
