@@ -95,7 +95,7 @@ def voice_changer_app():
 
                 
 
-              except Exception as e:
+            except Exception as e:
                 st.error(f"Error processing audio: {str(e)}")
 
 # Main runner
