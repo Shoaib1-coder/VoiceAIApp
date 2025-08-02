@@ -37,7 +37,7 @@ def voice_changer_app():
 
     
    # Voice effects
-EFFECTS = {
+    EFFECTS = {
     "Normal": lambda x, sr, gender: (x, sr),
     "Pitch Up": lambda x, sr, gender: (librosa.effects.pitch_shift(x, sr=sr, n_steps=4 if gender == "female" else 2), sr),
     "Pitch Down": lambda x, sr, gender: (librosa.effects.pitch_shift(x, sr=sr, n_steps=-4 if gender == "male" else -2), sr),
@@ -48,23 +48,17 @@ EFFECTS = {
     "Fast Forward": lambda x, sr, gender: (librosa.effects.time_stretch(x, rate=1.5), sr),
     "Radio Effect": lambda x, sr, gender: (signal.lfilter([1, -0.97], [1], x), sr),
     "Underwater": lambda x, sr, gender: (signal.lfilter([1], [1, -0.97], x), sr),
-
-    # New Effects
-    "None": lambda x, sr, gender: (x, sr),
-
-    "Reverb": lambda x, sr, gender: (
+     "Reverb": lambda x, sr, gender: (
         x + 0.2 * np.roll(x, int(0.01 * sr)) + 0.15 * np.roll(x, int(0.02 * sr)) +
         0.1 * np.roll(x, int(0.03 * sr)) + 0.05 * np.roll(x, int(0.04 * sr)), sr
-    ),
-
-    "Pitch Shift": lambda x, sr, gender: (
+             ),
+     "Pitch Shift": lambda x, sr, gender: (
         librosa.effects.pitch_shift(x, sr=sr, n_steps=6 if gender == "female" else 3), sr
-    ),
-
-    "Distortion": lambda x, sr, gender: (
+            ),
+       "Distortion": lambda x, sr, gender: (
         np.tanh(2 * x), sr
-    ),
-}
+        ),
+         }
 
 
     # Upload audio
