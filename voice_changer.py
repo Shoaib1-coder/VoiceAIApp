@@ -35,19 +35,37 @@ def voice_changer_app():
     st.title("🎙️ Voice Changer")
     st.markdown("Upload audio and modify voice characteristics in real-time")
 
-    # Voice effects
-    EFFECTS = {
-        "Normal": lambda x, sr, gender: (x, sr),
-        "Pitch Up": lambda x, sr, gender: (librosa.effects.pitch_shift(x, sr=sr, n_steps=4 if gender == "female" else 2), sr),
-        "Pitch Down": lambda x, sr, gender: (librosa.effects.pitch_shift(x, sr=sr, n_steps=-4 if gender == "male" else -2), sr),
-        "Robot Voice": lambda x, sr, gender: (signal.lfilter([0.5, 0.5], [1], x), sr),
-        "Echo": lambda x, sr, gender: (x + 0.3 * np.roll(x, sr // 3), sr),
-        "Whisper": lambda x, sr, gender: (x * np.random.uniform(0.2, 0.5, len(x)), sr),
-        "Slow Motion": lambda x, sr, gender: (librosa.effects.time_stretch(x, rate=0.7), sr),
-        "Fast Forward": lambda x, sr, gender: (librosa.effects.time_stretch(x, rate=1.5), sr),
-        "Radio Effect": lambda x, sr, gender: (signal.lfilter([1, -0.97], [1], x), sr),
-        "Underwater": lambda x, sr, gender: (signal.lfilter([1], [1, -0.97], x), sr)
-    }
+    
+   # Voice effects
+EFFECTS = {
+    "Normal": lambda x, sr, gender: (x, sr),
+    "Pitch Up": lambda x, sr, gender: (librosa.effects.pitch_shift(x, sr=sr, n_steps=4 if gender == "female" else 2), sr),
+    "Pitch Down": lambda x, sr, gender: (librosa.effects.pitch_shift(x, sr=sr, n_steps=-4 if gender == "male" else -2), sr),
+    "Robot Voice": lambda x, sr, gender: (signal.lfilter([0.5, 0.5], [1], x), sr),
+    "Echo": lambda x, sr, gender: (x + 0.3 * np.roll(x, sr // 3), sr),
+    "Whisper": lambda x, sr, gender: (x * np.random.uniform(0.2, 0.5, len(x)), sr),
+    "Slow Motion": lambda x, sr, gender: (librosa.effects.time_stretch(x, rate=0.7), sr),
+    "Fast Forward": lambda x, sr, gender: (librosa.effects.time_stretch(x, rate=1.5), sr),
+    "Radio Effect": lambda x, sr, gender: (signal.lfilter([1, -0.97], [1], x), sr),
+    "Underwater": lambda x, sr, gender: (signal.lfilter([1], [1, -0.97], x), sr),
+
+    # New Effects
+    "None": lambda x, sr, gender: (x, sr),
+
+    "Reverb": lambda x, sr, gender: (
+        x + 0.2 * np.roll(x, int(0.01 * sr)) + 0.15 * np.roll(x, int(0.02 * sr)) +
+        0.1 * np.roll(x, int(0.03 * sr)) + 0.05 * np.roll(x, int(0.04 * sr)), sr
+    ),
+
+    "Pitch Shift": lambda x, sr, gender: (
+        librosa.effects.pitch_shift(x, sr=sr, n_steps=6 if gender == "female" else 3), sr
+    ),
+
+    "Distortion": lambda x, sr, gender: (
+        np.tanh(2 * x), sr
+    ),
+}
+
 
     # Upload audio
     uploaded_file = st.file_uploader("Upload Audio (MP3, WAV, OGG, M4A, FLAC)", type=["mp3", "wav", "ogg", "m4a", "flac"])
