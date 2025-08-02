@@ -4,11 +4,6 @@ from voice_changer import main as voice_changer_main
 from voice_isolator import main as voice_isolator_main
 from speech_to_text import main as speech_to_text
 from text_to_speech import main as tts_main
-from gtts import gTTS
-from langdetect import detect
-import os
-import tempfile
-import time
 
 # ----------------- NAVIGATION -----------------
 selected = option_menu(
@@ -19,13 +14,13 @@ selected = option_menu(
     orientation="horizontal",
 )
 
-# ----------------- llEleven PAGE -----------------
+# ----------------- HOME PAGE -----------------
 def show_home():
-    st.title("Welcome to My VoiceAI Lab ") 
-    st.subheader(" GO to Home Page and go to Sidebar My Use Features")
+    st.title("Welcome to My VoiceAI Lab") 
+    st.subheader("Go to the Home Page and use the sidebar to explore features.")
     st.subheader("In the ancient land of Eldoria, where the skies were painted with shades of mystic hues...")
 
-    st.text("You can work with Text to Speech, Speech to Text, Voice Cloning, Voice Changer")            
+    st.text("You can work with Text to Speech, Speech to Text, Voice Cloning, and Voice Changer.")
 
     st.markdown("""
         <h1 style='font-size: 3.2em; color: #4A90E2;'> Create the Most <span style='color:#FF4B4B;'>Realistic Speech</span></h1>
@@ -36,30 +31,26 @@ def show_home():
     """, unsafe_allow_html=True)
 
     st.markdown("""
-      <hr>
-      <center style="color: red;">Made by Shoaib • © 2025 VoiceAI</center>
+        <hr>
+        <center style="color: red;">Made by Shoaib • © 2025 VoiceAI</center>
     """, unsafe_allow_html=True)
 
-# ----------------- HOME PAGE -----------------
+# ----------------- TOOLS PAGE -----------------
 def show_tools():
     st.sidebar.title("AI Voice Toolkit")
     selected_page = st.sidebar.radio(
         "Navigate",
-        [ "Text to Speech", "Speech to Text", "Voice Changer","Voice Isolator"]
+        ["Text to Speech", "Speech to Text", "Voice Changer", "Voice Isolator"]
     )
 
-    
-       
     if selected_page == "Text to Speech":
         tts_main()
     elif selected_page == "Speech to Text":
         speech_to_text()
     elif selected_page == "Voice Changer":
         voice_changer_main()
-
     elif selected_page == "Voice Isolator":
         voice_isolator_main()
- 
 
 # ----------------- DOCUMENTATION PAGE -----------------
 def show_documentation():
@@ -68,8 +59,7 @@ def show_documentation():
     - **Text to Speech**: Convert your text into human-like voice.
     - **Speech to Text**: Convert spoken audio into written text.
     - **Voice Changer**: Modify your voice pitch and tone.
-    - **Voice Isolator**: Remove noise and isolate voice clearly.
-   
+    - **Voice Isolator**: Remove background noise and isolate vocals.
 
     > Just open the app and explore the tools directly!
     """)
@@ -81,6 +71,7 @@ elif selected == "Tools":
     show_tools()
 elif selected == "Documentation":
     show_documentation()
+
 
 
 
