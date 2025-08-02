@@ -48,16 +48,9 @@ def voice_changer_app():
     "Fast Forward": lambda x, sr, gender: (librosa.effects.time_stretch(x, rate=1.5), sr),
     "Radio Effect": lambda x, sr, gender: (signal.lfilter([1, -0.97], [1], x), sr),
     "Underwater": lambda x, sr, gender: (signal.lfilter([1], [1, -0.97], x), sr),
-     "Reverb": lambda x, sr, gender: (
-        x + 0.2 * np.roll(x, int(0.01 * sr)) + 0.15 * np.roll(x, int(0.02 * sr)) +
-        0.1 * np.roll(x, int(0.03 * sr)) + 0.05 * np.roll(x, int(0.04 * sr)), sr
-             ),
-     "Pitch Shift": lambda x, sr, gender: (
-        librosa.effects.pitch_shift(x, sr=sr, n_steps=6 if gender == "female" else 3), sr
-            ),
-       "Distortion": lambda x, sr, gender: (
-        np.tanh(2 * x), sr
-        ),
+    "Reverb": lambda x, sr, gender: ( x + 0.2 * np.roll(x, int(0.01 * sr)) + 0.15 * np.roll(x, int(0.02 * sr)) + 0.1 * np.roll(x, int(0.03 * sr)) + 0.05 * np.roll(x, int(0.04 * sr)), sr),
+    "Pitch Shift": lambda x, sr, gender: ( librosa.effects.pitch_shift(x, sr=sr, n_steps=6 if gender == "female" else 3), sr),
+    "Distortion": lambda x, sr, gender: (np.tanh(2 * x), sr),
          }
 
 
@@ -100,17 +93,9 @@ def voice_changer_app():
                         mime="audio/wav"
                     )
 
-                # Plot waveform
-                st.subheader("Waveform Comparison")
-                fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 6))
-                librosa.display.waveshow(y, sr=sr, ax=ax1, color='blue')
-                ax1.set_title("Original Voice")
-                librosa.display.waveshow(y_processed, sr=sr, ax=ax2, color='red')
-                ax2.set_title("Modified Voice")
-                plt.tight_layout()
-                st.pyplot(fig)
+                
 
-            except Exception as e:
+              except Exception as e:
                 st.error(f"Error processing audio: {str(e)}")
 
 # Main runner
