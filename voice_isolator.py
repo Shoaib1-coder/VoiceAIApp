@@ -10,7 +10,7 @@ from pydub import AudioSegment
 
 def main():
     st.set_page_config(page_title="Voice Isolator", layout="centered")
-    st.markdown("## 🎤 Voice Isolator")
+    st.markdown("##  Voice Isolator")
     st.markdown("Upload audio to extract clean vocals")
     st.markdown("#### Upload MP3, WAV, OGG, M4A, FLAC (max 10MB)")
 
@@ -27,7 +27,7 @@ def main():
             y, sr = librosa.load(wav_io, sr=None)
             return y, sr, None
         except Exception as e:
-            return None, None, f"❌ Error: {str(e)}"
+            return None, None, f"Error: {str(e)}"
 
     if uploaded_file:
         st.audio(uploaded_file, format="audio/mpeg")
@@ -36,7 +36,7 @@ def main():
         if error:
             st.error(error)
         else:
-            st.info("🔊 Audio loaded. Processing to isolate voice...")
+            st.info(" Audio loaded. Processing to isolate voice...")
 
             reduced_noise = nr.reduce_noise(y=y, sr=sr)
 
@@ -44,10 +44,10 @@ def main():
             sf.write(output_buffer, reduced_noise, sr, format='WAV')
             output_buffer.seek(0)
 
-            st.success("✅ Voice isolation complete. Download below.")
+            st.success("Voice isolation complete. Download below.")
             st.audio(output_buffer, format="audio/wav")
             st.download_button(
-                label="⬇️ Download Isolated Voice",
+                label=" Download Isolated Voice",
                 data=output_buffer,
                 file_name="clean_voice.wav",
                 mime="audio/wav"
